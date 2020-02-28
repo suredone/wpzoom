@@ -18,7 +18,7 @@ class WPZOOM_Plugin {
 
   public function __construct() {
 
-    require_once( WP_ZOOM_PLUGIN_PATH . '/zoom/ZoomAPI.php' );
+    require_once( WP_ZOOM_PLUGIN_PATH . '/zoom/vendor/autoload.php' );
 
     $key = 'BLZk_6UkTF6nRpSicuVpaw';
     $secret = 's5rL5vY3Hz7BsM2yHtifV2HFnVlNRwnSTMjF';
