@@ -19,15 +19,32 @@ class WPZOOM_Plugin {
   public function __construct() {
 
     require_once( WP_ZOOM_PLUGIN_PATH . '/zoom/vendor/autoload.php' );
+    require_once( WP_ZOOM_PLUGIN_PATH . '/src/Webinar.php' );
 
+
+    /* E/B/P */
     $key = 'BLZk_6UkTF6nRpSicuVpaw';
     $secret = 's5rL5vY3Hz7BsM2yHtifV2HFnVlNRwnSTMjF';
 
-    $zoomApi = new \Zoom\ZoomAPI( $key, $secret );
+
+    /* SureDone */
+    //$key = 'LtEfg2eYSueQl4hNKARzwQ';
+    //$secret = '5TUwHzPI2vQT8KiUppIsUsNlsk4n32fe';
+
+    $zoomUsers = new Zoom\Endpoint\Users( $key, $secret );
+    $users = $zoomUsers->list();
 
     print '<pre>';
-    var_dump( $zoomApi );
+    var_dump( $users );
     print '</pre>';
+
+    $zoomWebinar = new Zoom\Endpoint\Webinar( $key, $secret );
+    $webinars = $zoomWebinar->list();
+
+    print '<pre>';
+    var_dump( $webinars );
+    print '</pre>';
+
     die();
 
   }
