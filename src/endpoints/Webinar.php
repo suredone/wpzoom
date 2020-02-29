@@ -28,8 +28,8 @@ class Webinar extends Request {
    * @param array $query
    * @return array|mixed
    */
-  public function list( array $query = [] ) {
-    return $this->get( "webinars", $query );
+  public function list(string $userId, array $query = []) {
+    return $this->get("users/{$userId}/webinars", $query);
   }
 
 }

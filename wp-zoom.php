@@ -18,34 +18,54 @@ class WPZOOM_Plugin {
 
   public function __construct() {
 
-    require_once( WP_ZOOM_PLUGIN_PATH . '/zoom/vendor/autoload.php' );
-    require_once( WP_ZOOM_PLUGIN_PATH . '/src/Webinar.php' );
+    require_once( WP_ZOOM_PLUGIN_PATH . 'zoom/vendor/autoload.php' );
+    require_once( WP_ZOOM_PLUGIN_PATH . 'src/endpoints/Webinar.php' );
+    require_once( WP_ZOOM_PLUGIN_PATH . 'src/shortcodes/zoom_webinar/shortcode.php' );
+    require_once( WP_ZOOM_PLUGIN_PATH . 'src/template.php' );
 
 
     /* E/B/P */
-    $key = 'BLZk_6UkTF6nRpSicuVpaw';
-    $secret = 's5rL5vY3Hz7BsM2yHtifV2HFnVlNRwnSTMjF';
-
+    //$key = 'BLZk_6UkTF6nRpSicuVpaw';
+    //$secret = 's5rL5vY3Hz7BsM2yHtifV2HFnVlNRwnSTMjF';
 
     /* SureDone */
-    //$key = 'LtEfg2eYSueQl4hNKARzwQ';
-    //$secret = '5TUwHzPI2vQT8KiUppIsUsNlsk4n32fe';
+    $key    = 'MzjAyttgT76CM79z47S1kA';
+    $secret = 'TZLZVlQnoo0APtFaaTYfFb4UudC4EgYL3AoR';
 
     $zoomUsers = new Zoom\Endpoint\Users( $key, $secret );
-    $users = $zoomUsers->list();
+    $userResponse = $zoomUsers->list();
+    $userFirst = $userResponse['users'][0];
 
+    /*
     print '<pre>';
     var_dump( $users );
     print '</pre>';
+    */
 
     $zoomWebinar = new Zoom\Endpoint\Webinar( $key, $secret );
-    $webinars = $zoomWebinar->list();
+    $webinarResponse = $zoomWebinar->list( $userFirst['id'], [] );
 
+/*
     print '<pre>';
-    var_dump( $webinars );
+    var_dump( $webinarResponse );
     print '</pre>';
 
     die();
+
+    */
+
+    /* init shortcodes */
+    new WPZOOM_ZoomWebinarShortcode();
+
+
+    /* test templating */
+    $template = new WPZOOM_Template();
+    $template->templatePath = 'src/shortcodes/zoom_webinar/templates/';
+    $template->templateName = 'table';
+    $template->data = array(
+      'varsity' => 'kim'
+    );
+    $template->render();
 
   }
 
