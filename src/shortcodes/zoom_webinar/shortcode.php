@@ -23,8 +23,8 @@ class WPZOOM_ZoomWebinarShortcode {
     $secret = 'TZLZVlQnoo0APtFaaTYfFb4UudC4EgYL3AoR';
     $zoomUsers = new Zoom\Endpoint\Users( $key, $secret );
     $userResponse = $zoomUsers->list();
-    $userFirst = $userResponse['users'][0];
 
+    $userFirst = $userResponse['users'][0];
 
     $zoomWebinar = new Zoom\Endpoint\Webinar( $key, $secret );
     $webinarResponse = $zoomWebinar->list( $userFirst['id'], [] );
