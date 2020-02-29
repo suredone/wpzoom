@@ -19,8 +19,25 @@ class WPZOOM_ZoomWebinarShortcode {
       'baz' => 'default baz'
     ), $atts, 'bartag' );
 
-    $content = 'WEBINAR TABLE!';
-    return $content;
+    $key    = 'MzjAyttgT76CM79z47S1kA';
+    $secret = 'TZLZVlQnoo0APtFaaTYfFb4UudC4EgYL3AoR';
+    $zoomUsers = new Zoom\Endpoint\Users( $key, $secret );
+    $userResponse = $zoomUsers->list();
+    $userFirst = $userResponse['users'][0];
+
+
+    $zoomWebinar = new Zoom\Endpoint\Webinar( $key, $secret );
+    $webinarResponse = $zoomWebinar->list( $userFirst['id'], [] );
+
+    /* test templating */
+    $template = new WPZOOM_Template();
+    $template->templatePath = 'src/shortcodes/zoom_webinar/templates/';
+    $template->templateName = 'table';
+    $template->data = array(
+      'webinarResponse' => $webinarResponse,
+      'webinars' => $webinarResponse['webinars']
+    );
+    return $template->get();
 
   }
 
