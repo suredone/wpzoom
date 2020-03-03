@@ -27,7 +27,14 @@ class WPZOOM_ZoomRecordingShortcode {
 
 
     $zoomRecording = new Zoom\Endpoint\Recording( $key, $secret );
+		$args = array(
+			'to' => date('yyyy-MM-dd T HH:mm:ssZ')
+		);
     $recordingResponse = $zoomRecording->list( $userFirst['id'], [] );
+
+		print '<pre>';
+		var_dump($recordingResponse);
+		print '</pre>';
 
     $template = new WPZOOM_Template();
     $template->templatePath = 'src/shortcodes/zoom_recording/templates/';

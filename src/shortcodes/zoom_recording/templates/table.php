@@ -1,8 +1,10 @@
 <?php
 
+/*
 print '<pre>';
 var_dump( $recordingResponse );
 print '</pre>';
+*/
 
 ?>
 
