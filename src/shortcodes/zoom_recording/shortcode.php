@@ -27,12 +27,15 @@ class WPZOOM_ZoomRecordingShortcode {
 
 
     $zoomRecording = new Zoom\Endpoint\Recording( $key, $secret );
+		$fromTime = strtotime("-1 month");
+		$fromDate = date('Y-m-d', $fromTime);
 		$args = array(
-			'to' => date('yyyy-MM-dd T HH:mm:ssZ')
+			'from' => $fromDate
 		);
-    $recordingResponse = $zoomRecording->list( $userFirst['id'], [] );
+    $recordingResponse = $zoomRecording->list( $userFirst['id'], $args );
 
 		print '<pre>';
+		var_dump( $fromDate );
 		var_dump($recordingResponse);
 		print '</pre>';
 
