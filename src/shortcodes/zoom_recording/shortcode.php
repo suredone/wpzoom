@@ -34,11 +34,6 @@ class WPZOOM_ZoomRecordingShortcode {
 		);
     $recordingResponse = $zoomRecording->list( $userFirst['id'], $args );
 
-		print '<pre>';
-		var_dump( $fromDate );
-		var_dump($recordingResponse);
-		print '</pre>';
-
     $template = new WPZOOM_Template();
     $template->templatePath = 'src/shortcodes/zoom_recording/templates/';
     $template->templateName = 'table';

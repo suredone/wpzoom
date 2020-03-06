@@ -15,8 +15,10 @@ class WPZOOM_ZoomCalendarShortcode {
   public function doShortcode( $atts ) {
 
     $atts = shortcode_atts( array(
-      'foo' => 'no foo',
-      'baz' => 'default baz'
+      'include' => 'include',
+      'exclude' => 'exclude',
+      'hide' => 'hide',
+      'days' => 'days'
     ), $atts, 'bartag' );
 
     $key    = 'MzjAyttgT76CM79z47S1kA';
