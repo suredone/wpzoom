@@ -1,36 +1,28 @@
 <?php
-
+/*
 print '<pre>';
 var_dump( $recordingResponse );
 print '</pre>';
-
+*/
 ?>
 
-<h1>Upcoming Webinars</h1>
+<h1>Webinar Recordings</h1>
 
 <table>
   <thead>
     <tr>
       <th>Title</th>
-      <th>Start</th>
-      <th>Duration</th>
       <th>&nbsp;</th>
     </tr>
   </thead>
   <tbody>
-    <?php foreach( $webinars as $webinar ) : ?>
+    <?php foreach( $recordings as $recording ) : ?>
       <tr>
         <td>
-          <?php print $webinar['topic']; ?>
+          <?php print $recording['topic']; ?>
         </td>
         <td>
-          <?php print $webinar['start_time']; ?>
-        </td>
-        <td>
-          <?php print $webinar['duration']; ?> Minutes
-        </td>
-        <td>
-          <button>Register</button>
+          <button>Download</button>
         </td>
       </tr>
     <?php endforeach; ?>
