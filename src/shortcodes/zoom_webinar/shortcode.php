@@ -35,7 +35,9 @@ class WPZOOM_ZoomWebinarShortcode {
     $webinars = array();
     if( !empty( $webinarResponse['webinars'] )) {
 
-      foreach( $webinarResponse['webinars'] as $webinarData ) :
+      $webinarsSorted = array_reverse( $webinarResponse['webinars'] );
+
+      foreach( $webinarsSorted as $webinarData ) :
 
         $webinar = new stdClass;
         $title = $webinarData['topic'];
@@ -57,9 +59,12 @@ class WPZOOM_ZoomWebinarShortcode {
 
         // check days into future filter
         if( $atts['days'] != '' ) {
-          if( $this->daysFilter( $start, $atts['days'] )) {
-            continue;
-          }
+          $days = $atts['days'];
+        } else {
+          $days = 365;
+        }
+        if( $this->daysFilter( $start, $days )) {
+          continue;
         }
 
         // handle title filtering hide
@@ -67,6 +72,12 @@ class WPZOOM_ZoomWebinarShortcode {
           $title = $this->prepareTitle( $title, $atts['hide'] );
         }
         $webinar->title = $title;
+
+        // get the start time
+        $startTime = $webinarData['start_time'];
+        $dateTime = DateTime::createFromFormat( 'Y-m-d?H:i:s?', $startTime );
+        $webinar->start = $dateTime->format( 'Y-m-d' ) . ' at ' . $dateTime->format( 'g:iA' );
+        $webinar->duration = $webinarData['duration'];
 
         // stash webinar object
         $webinars[] = $webinar;
@@ -123,7 +134,7 @@ class WPZOOM_ZoomWebinarShortcode {
     if( $daysAway > $days ) {
       return true;
     }
-    
+
   }
 
 

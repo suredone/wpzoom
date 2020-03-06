@@ -24,10 +24,10 @@ print '</pre>';
           <?php print $webinar->title; ?>
         </td>
         <td>
-          <?php //print $webinar['start_time']; ?>
+          <?php print $webinar->start; ?>
         </td>
         <td>
-          <?php //print $webinar['duration']; ?> Minutes
+          <?php print $webinar->duration; ?> Minutes
         </td>
         <td>
           <button>Register</button>
