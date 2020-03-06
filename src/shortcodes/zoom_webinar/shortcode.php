@@ -137,6 +137,4 @@ class WPZOOM_ZoomWebinarShortcode {
 
   }
 
-
-
 }

@@ -21,7 +21,7 @@ print '</pre>';
     <?php foreach( $recordings as $recording ) : ?>
       <tr>
         <td>
-          <?php print $recording['topic']; ?>
+          <?php // print $recording['topic']; ?>
         </td>
         <td>
           <button>Download</button>
