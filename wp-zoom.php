@@ -20,14 +20,18 @@ class WPZOOM_Plugin {
 
     require_once( WP_ZOOM_PLUGIN_PATH . 'zoom/vendor/autoload.php' );
     require_once( WP_ZOOM_PLUGIN_PATH . 'src/endpoints/Webinar.php' );
+		require_once( WP_ZOOM_PLUGIN_PATH . 'src/endpoints/Recording.php' );
+
     require_once( WP_ZOOM_PLUGIN_PATH . 'src/shortcodes/zoom_webinar/shortcode.php' );
     require_once( WP_ZOOM_PLUGIN_PATH . 'src/shortcodes/zoom_calendar/shortcode.php' );
+		require_once( WP_ZOOM_PLUGIN_PATH . 'src/shortcodes/zoom_recording/shortcode.php' );
 
     require_once( WP_ZOOM_PLUGIN_PATH . 'src/template.php' );
 
     /* init shortcodes */
     new WPZOOM_ZoomWebinarShortcode();
     new WPZOOM_ZoomCalendarShortcode();
+		new WPZOOM_ZoomRecordingShortcode();
 
   }
 

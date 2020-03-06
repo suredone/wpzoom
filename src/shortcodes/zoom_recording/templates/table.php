@@ -1,9 +1,11 @@
 <?php
+
 /*
 print '<pre>';
 var_dump( $recordingResponse );
 print '</pre>';
 */
+
 ?>
 
 <h1>Webinar Recordings</h1>
