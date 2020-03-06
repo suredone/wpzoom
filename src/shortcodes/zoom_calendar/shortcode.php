@@ -19,7 +19,7 @@ class WPZOOM_ZoomCalendarShortcode {
       'exclude' => 'exclude',
       'hide' => 'hide',
       'days' => 'days'
-    ), $atts, 'bartag' );
+    ), $atts, 'zoom_webinar' );
 
     $key    = 'MzjAyttgT76CM79z47S1kA';
     $secret = 'TZLZVlQnoo0APtFaaTYfFb4UudC4EgYL3AoR';

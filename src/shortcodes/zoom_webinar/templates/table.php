@@ -21,13 +21,13 @@ print '</pre>';
     <?php foreach( $webinars as $webinar ) : ?>
       <tr>
         <td>
-          <?php print $webinar['topic']; ?>
+          <?php print $webinar->title; ?>
         </td>
         <td>
-          <?php print $webinar['start_time']; ?>
+          <?php //print $webinar['start_time']; ?>
         </td>
         <td>
-          <?php print $webinar['duration']; ?> Minutes
+          <?php //print $webinar['duration']; ?> Minutes
         </td>
         <td>
           <button>Register</button>

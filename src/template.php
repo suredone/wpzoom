@@ -17,7 +17,7 @@ class WPZOOM_Template {
     if( is_array( $this->data ) && !empty( $this->data )) {
       extract( $this->data );
     }
-    require_once( WP_ZOOM_PLUGIN_PATH . $this->templatePath . $this->templateName . '.php' );
+    require( WP_ZOOM_PLUGIN_PATH . $this->templatePath . $this->templateName . '.php' );
   }
 
   public function render() {
