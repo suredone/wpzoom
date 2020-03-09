@@ -35,6 +35,14 @@ class WPZOOM_Plugin {
 
   }
 
+  public static function getTokenKey() {
+    return 'MzjAyttgT76CM79z47S1kA';
+  }
+
+  public static function getTokenSecret() {
+    return 'TZLZVlQnoo0APtFaaTYfFb4UudC4EgYL3AoR';
+  }
+
 }
 
 new WPZOOM_Plugin();

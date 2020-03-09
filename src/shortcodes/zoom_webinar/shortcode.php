@@ -21,8 +21,8 @@ class WPZOOM_ZoomWebinarShortcode {
       'days'    => ''
     ), $atts, 'zoom_webinar' );
 
-    $key    = 'MzjAyttgT76CM79z47S1kA';
-    $secret = 'TZLZVlQnoo0APtFaaTYfFb4UudC4EgYL3AoR';
+    $key    = WPZOOM_Plugin::getTokenKey();
+    $secret = WPZOOM_Plugin::getTokenSecret();
     $zoomUsers = new Zoom\Endpoint\Users( $key, $secret );
     $userResponse = $zoomUsers->list();
 

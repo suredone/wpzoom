@@ -21,8 +21,8 @@ class WPZOOM_ZoomRecordingShortcode {
       'days'    => ''
     ), $atts, $this->tag );
 
-    $key    = 'MzjAyttgT76CM79z47S1kA';
-    $secret = 'TZLZVlQnoo0APtFaaTYfFb4UudC4EgYL3AoR';
+    $key    = WPZOOM_Plugin::getTokenKey();
+    $secret = WPZOOM_Plugin::getTokenSecret();
     $zoomUsers = new Zoom\Endpoint\Users( $key, $secret );
     $userResponse = $zoomUsers->list();
     $userFirst = $userResponse['users'][0];
@@ -37,6 +37,12 @@ class WPZOOM_ZoomRecordingShortcode {
     }
     $fromTime = strtotime("-" . $daysAgo . " days");
 		$fromDate = date('Y-m-d', $fromTime);
+
+    /*
+    print '<pre>';
+    var_dump( $fromDate );
+    print '</pre>';
+    */
 
 		$args = array(
 			'from' => $fromDate
@@ -54,12 +60,19 @@ class WPZOOM_ZoomRecordingShortcode {
     }
 
     $meetingsResponse = $response['meetings'];
+
+    /*
+    print '<pre>';
+    var_dump($meetingsResponse);
+    print '</pre>';
+    */
+
     $meetings = array();
     foreach( $meetingsResponse as $meetingData ) {
 
       $meeting = new stdClass;
-      $start = $meetingData['start_time'];
-      $title = $meetingData['topic'];
+      $meeting->start = $meetingData['start_time'];
+      $meeting->title = $meetingData['topic'];
 
       // check if contains exclude words
       if( $atts['exclude'] != '' ) {
@@ -75,25 +88,24 @@ class WPZOOM_ZoomRecordingShortcode {
         }
       }
 
-      // check days into past filter
-      if( $atts['days'] != '' ) {
-        $days = $atts['days'];
-      } else {
-        $days = 365;
-      }
-      if( $this->daysFilter( $start, $days )) {
-        continue;
-      }
+      $meeting->recording_files = $meetingData['recording_files'];
+      $meeting->recording_count = $meetingData['recording_count'];
 
       $meetings[] = $meeting;
     }
+
+    /*
+    print '<pre>';
+    var_dump($meetings);
+    print '</pre>';
+    */
 
     $template = new WPZOOM_Template();
     $template->templatePath = 'src/shortcodes/zoom_recording/templates/';
     $template->templateName = 'table';
     $template->data = array(
       'response' => $response,
-      'recordings' => $meetings
+      'meetings' => $meetings
     );
     return $template->get();
 

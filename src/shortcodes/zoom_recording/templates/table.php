@@ -18,13 +18,19 @@ print '</pre>';
     </tr>
   </thead>
   <tbody>
-    <?php foreach( $recordings as $recording ) : ?>
+    <?php foreach( $meetings as $meeting ) : ?>
       <tr>
         <td>
-          <?php // print $recording['topic']; ?>
+          <?php print $meeting->title; ?>
         </td>
         <td>
-          <button>Download</button>
+          <?php
+            if( $meeting->recording_count >= 1 ):
+              foreach( $meeting->recording_files as $recording ) :
+          ?>
+            <button>Download <?php print $recording['download_url']; ?></button>
+
+          <?php endforeach; endif; ?>
         </td>
       </tr>
     <?php endforeach; ?>
