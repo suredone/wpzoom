@@ -16,17 +16,12 @@ class WPZOOM_ZoomRegisterShortcode {
 
     $atts = shortcode_atts( array(
       'foo' => 'no foo',
-      'baz' => 'default baz'
-    ), $atts, 'bartag' );
+    ), $atts, $this->tag );
 
-    /* test templating */
     $template = new WPZOOM_Template();
-    $template->templatePath = 'src/shortcodes/zoom_webinar/templates/';
-    $template->templateName = 'table';
-    $template->data = array(
-      'webinarResponse' => $webinarResponse,
-      'webinars' => $webinarResponse['webinars']
-    );
+    $template->templatePath = 'src/shortcodes/zoom_register/templates/';
+    $template->templateName = 'register-form';
+    $template->data = array();
     return $template->get();
 
   }
@@ -41,13 +36,12 @@ class WPZOOM_ZoomRegisterShortcode {
     $email = $post[ $prefix . 'email' ];
 
     // make call to zoom api to do registration
-    
+
 
     // handle failure (show notices)
 
 
-
-
+    // on success return confirmation
 
 
   }

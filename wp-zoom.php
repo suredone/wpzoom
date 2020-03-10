@@ -25,6 +25,7 @@ class WPZOOM_Plugin {
     require_once( WP_ZOOM_PLUGIN_PATH . 'src/shortcodes/zoom_webinar/shortcode.php' );
     require_once( WP_ZOOM_PLUGIN_PATH . 'src/shortcodes/zoom_calendar/shortcode.php' );
 		require_once( WP_ZOOM_PLUGIN_PATH . 'src/shortcodes/zoom_recording/shortcode.php' );
+    require_once( WP_ZOOM_PLUGIN_PATH . 'src/shortcodes/zoom_register/shortcode.php' );
 
     require_once( WP_ZOOM_PLUGIN_PATH . 'src/template.php' );
 
@@ -32,6 +33,9 @@ class WPZOOM_Plugin {
     new WPZOOM_ZoomWebinarShortcode();
     new WPZOOM_ZoomCalendarShortcode();
 		new WPZOOM_ZoomRecordingShortcode();
+    new WPZOOM_ZoomRegisterShortcode();
+
+    add_action('wp_enqueue_scripts', array( $this, 'scripts' ));
 
   }
 
@@ -41,6 +45,18 @@ class WPZOOM_Plugin {
 
   public static function getTokenSecret() {
     return 'TZLZVlQnoo0APtFaaTYfFb4UudC4EgYL3AoR';
+  }
+
+  public function scripts() {
+
+    wp_enqueue_script(
+      'wp-zoom-register-js', 
+      WP_ZOOM_PLUGIN_URL . 'src/shortcodes/zoom_register/assets/zoom_register.js',
+      array( 'jquery' ),
+      '1.0.0',
+      true
+    );
+
   }
 
 }
