@@ -31,4 +31,24 @@ class WPZOOM_ZoomRegisterShortcode {
 
   }
 
+  public function processForm() {
+
+    $prefix = 'zoom-field-';
+    $post = $_POST;
+
+    // set field data vars 
+    $name = $post[ $prefix . 'name' ];
+    $email = $post[ $prefix . 'email' ];
+
+    // make call to zoom api to do registration
+
+    // handle failure (show notices)
+
+
+
+
+
+
+  }
+
 }
