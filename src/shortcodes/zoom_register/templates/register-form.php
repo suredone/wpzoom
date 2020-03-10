@@ -6,8 +6,13 @@
     <form method="POST" action="zoom-register-process">
 
       <div class="zoom-form-field">
-        <label for="zoom-field-name">Name</label>
-        <input class="zoom-field-name" id="zoom-field-name" type="text" />
+        <label for="zoom-field-first-name">First Name</label>
+        <input class="zoom-field-first-name" id="zoom-field-first-name" type="text" />
+      </div>
+
+      <div class="zoom-form-field">
+        <label for="zoom-field-last-name">Last Name</label>
+        <input class="zoom-field-last-name" id="zoom-field-last-name" type="text" />
       </div>
 
       <div class="zoom-form-field">

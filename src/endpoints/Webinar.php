@@ -29,4 +29,10 @@ class Webinar extends Request {
     return $this->get("users/{$userId}/webinars", $query);
   }
 
+  public function registerUser() {
+
+    // /webinars/{webinarId}/registrants
+
+  }
+
 }
