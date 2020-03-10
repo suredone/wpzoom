@@ -76,14 +76,14 @@ class WPZOOM_ZoomRecordingShortcode {
 
       // check if contains exclude words
       if( $atts['exclude'] != '' ) {
-        if( $this->excludeFilter( $title, $atts['exclude'] )) {
+        if( $this->excludeFilter( $meeting->title, $atts['exclude'] )) {
           continue;
         }
       }
 
       // check if contains include words
       if( $atts['include'] != '' ) {
-        if( $this->includeFilter( $title, $atts['include'] )) {
+        if( $this->includeFilter( $meeting->title, $atts['include'] )) {
           continue;
         }
       }
