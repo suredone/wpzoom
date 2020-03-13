@@ -106,6 +106,46 @@ class WPZOOM_Plugin {
       true
     );
 
+    wp_enqueue_script(
+      'full-calendar-core-js',
+      'https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/core/main.min.js',
+      array(),
+      '4.2.0',
+      true
+    );
+
+    wp_enqueue_script(
+      'full-calendar-daygrid',
+      'https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/daygrid/main.min.js',
+      array('full-calendar-core-js'),
+      '4.2.0',
+      true
+    );
+
+    wp_enqueue_script(
+      'zoom-calendar-js',
+      WP_ZOOM_PLUGIN_URL . 'src/shortcodes/zoom_calendar/assets/zoom-calendar.js',
+      array('full-calendar-core-js'),
+      '1.0.0',
+      true
+    );
+
+    wp_enqueue_style(
+      'full-calendar-core-style',
+      'https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/core/main.min.css',
+      array(),
+      '4.2.0',
+      true
+    );
+
+    wp_enqueue_style(
+      'full-calendar-daygrid-style',
+      'https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/daygrid/main.min.css',
+      array('full-calendar-core-style'),
+      '4.2.0',
+      true
+    );
+
   }
 
 }

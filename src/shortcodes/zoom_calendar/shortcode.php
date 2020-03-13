@@ -34,7 +34,7 @@ class WPZOOM_ZoomCalendarShortcode {
     /* test templating */
     $template = new WPZOOM_Template();
     $template->templatePath = 'src/shortcodes/zoom_calendar/templates/';
-    $template->templateName = 'table';
+    $template->templateName = 'calendar';
     $template->data = array(
       'webinarResponse' => $webinarResponse,
       'webinars' => $webinarResponse['webinars']
