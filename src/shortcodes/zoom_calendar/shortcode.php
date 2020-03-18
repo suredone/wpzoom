@@ -31,6 +31,12 @@ class WPZOOM_ZoomCalendarShortcode {
     $zoomWebinar = new Zoom\Endpoint\Webinar( $key, $secret );
     $webinarResponse = $zoomWebinar->list( $userFirst['id'], [] );
 
+    wp_localize_script(
+      'zoom-calendar-js',
+      'wpZoomWebinars',
+      $webinarResponse['webinars']
+    );
+
     /* test templating */
     $template = new WPZOOM_Template();
     $template->templatePath = 'src/shortcodes/zoom_calendar/templates/';

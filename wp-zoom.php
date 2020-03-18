@@ -135,7 +135,7 @@ class WPZOOM_Plugin {
       'https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/core/main.min.css',
       array(),
       '4.2.0',
-      true
+      false
     );
 
     wp_enqueue_style(
@@ -143,7 +143,7 @@ class WPZOOM_Plugin {
       'https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/daygrid/main.min.css',
       array('full-calendar-core-style'),
       '4.2.0',
-      true
+      false
     );
 
   }

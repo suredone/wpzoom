@@ -1,8 +1,15 @@
 document.addEventListener('DOMContentLoaded', function() {
 
-  var events = [
+  var events = []
 
-  ]
+  wpZoomWebinars.forEach( function( item, index ) {
+    var event = {
+      title: item.topic,
+      start: item.start_time
+    }
+    events.push( event )
+  })
+
 
   var calendarEl = document.getElementById('zoom-calendar');
 
