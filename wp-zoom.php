@@ -146,6 +146,14 @@ class WPZOOM_Plugin {
       false
     );
 
+    wp_enqueue_style(
+      'wp-zoom-style',
+      WP_ZOOM_PLUGIN_URL . 'assets/wp-zoom-styles.css',
+      array('full-calendar-daygrid-style'),
+      '1.0.0',
+      false
+    );
+
   }
 
 }
