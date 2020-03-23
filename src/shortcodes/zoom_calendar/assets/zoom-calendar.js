@@ -13,8 +13,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
   var calendarEl = document.getElementById('zoom-calendar');
 
-  console.log( calendarEl )
-
   var calendar = new FullCalendar.Calendar(calendarEl, {
     plugins: [ 'dayGrid' ],
     header: {
@@ -28,10 +26,19 @@ document.addEventListener('DOMContentLoaded', function() {
     editable: true,
     height: 'auto',
     contentHeight: 'auto',
-    events: events
-  });
+    events: events,
+    eventClick: function( info ) {
 
-  console.log( calendar )
+      console.log(info)
+      console.log( calendar )
+
+      //calendar.gotoDate(info.event.start);
+      calendar.changeView('dayGrid', info.event.start);
+
+
+
+    }
+  });
 
   calendar.render();
 

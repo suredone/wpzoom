@@ -125,7 +125,7 @@ class WPZOOM_Plugin {
     wp_enqueue_script(
       'zoom-calendar-js',
       WP_ZOOM_PLUGIN_URL . 'src/shortcodes/zoom_calendar/assets/zoom-calendar.js',
-      array('full-calendar-core-js'),
+      array('popper-js'),
       '1.0.0',
       true
     );
