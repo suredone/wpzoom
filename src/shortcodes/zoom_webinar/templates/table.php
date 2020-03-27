@@ -5,9 +5,6 @@ var_dump( $webinarResponse );
 print '</pre>';
 */
 ?>
-
-<h1>Upcoming Webinars</h1>
-
 <table>
   <thead>
     <tr>
