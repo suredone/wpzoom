@@ -21,8 +21,8 @@ class WPZOOM_ZoomRecordingShortcode {
       'days'    => ''
     ), $atts, $this->tag );
 
-    $key    = WPZOOM_Plugin::getTokenKey();
-    $secret = WPZOOM_Plugin::getTokenSecret();
+    $key    = WPZOOM_Settings::getTokenKey();
+    $secret = WPZOOM_Settings::getTokenSecret();
     $zoomUsers = new Zoom\Endpoint\Users( $key, $secret );
     $userResponse = $zoomUsers->list();
     $userFirst = $userResponse['users'][0];

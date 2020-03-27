@@ -30,7 +30,7 @@ print '</pre>';
           <?php print $webinar->duration; ?> Minutes
         </td>
         <td>
-          <button>Register</button>
+          <a class="button" href="<?php echo esc_url( WPZOOM_Settings::getRegistrationPageLink() ); ?>">Register</a>
         </td>
       </tr>
     <?php endforeach; ?>
