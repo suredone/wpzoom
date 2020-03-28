@@ -55,3 +55,30 @@ function wpzoom_timezone_string() {
 
     return $tz_offset;
 }
+
+/**
+ * Check file type is playable.
+ *
+ * @param string $filetype
+ * @return bool
+ */
+function wpzoom_is_filetype_playable( $filetype = '' ) {
+    $filetype = strtolower( $filetype );
+    return in_array( $filetype, array( 'mp4', 'm4a' ), true );
+}
+
+/**
+ * Check a recording array and find if it's playable.
+ *
+ * @param array $recording
+ * @return bool
+ */
+function wpzoom_is_recording_playable( $recording ) {
+    if ( ! is_array( $recording ) ||
+        ! isset( $recording['play_url'] ) ||
+        ! isset( $recording['file_type'] ) ) {
+        return false;
+    }
+
+    return wpzoom_is_filetype_playable( $recording['file_type'] );
+}
