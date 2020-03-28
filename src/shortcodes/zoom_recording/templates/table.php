@@ -11,11 +11,16 @@
       </tr>
     </thead>
     <tbody>
-      <?php foreach( $meetings as $meeting ) : ?>
+      <?php
+      foreach( $meetings as $meeting ) :
+        $dateTime = new DateTime( $meeting->start );
+        $dateTime->setTimezone( wpzoom_timezone() ); // Had to set forcefully
+        $startTime = $dateTime->format( 'Y-m-d' ) . ' at ' . $dateTime->format( 'g:iA' );
+        ?>
         <tr>
           <td>
             <h2><?php print $meeting->title; ?></h2>
-            <div class="meeting-start"><?php print $meeting->start; ?></div>
+            <div class="meeting-start"><?php print $startTime; ?></div>
           </td>
           <td>
             <?php
