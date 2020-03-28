@@ -29,7 +29,8 @@ class WPZOOM_Plugin {
 
     require_once( WP_ZOOM_PLUGIN_PATH . 'src/template.php' );
     require_once( WP_ZOOM_PLUGIN_PATH . 'src/admin/settings.php' );
-
+    require_once( WP_ZOOM_PLUGIN_PATH . 'src/functions.php' );
+    
     /* init shortcodes */
     new WPZOOM_ZoomWebinarShortcode();
     new WPZOOM_ZoomCalendarShortcode();

@@ -13,7 +13,6 @@ class WPZOOM_ZoomWebinarShortcode {
   }
 
   public function doShortcode( $atts ) {
-
     $atts = shortcode_atts( array(
       'include' => '',
       'exclude' => '',
@@ -75,7 +74,8 @@ class WPZOOM_ZoomWebinarShortcode {
 
         // get the start time
         $startTime = $webinarData['start_time'];
-        $dateTime = DateTime::createFromFormat( 'Y-m-d?H:i:s?', $startTime );
+        $dateTime = new DateTime( $startTime );
+        $dateTime->setTimezone( wpzoom_timezone() ); // Had to set forcefully
         $webinar->start = $dateTime->format( 'Y-m-d' ) . ' at ' . $dateTime->format( 'g:iA' );
         $webinar->duration = $webinarData['duration'];
 
@@ -122,7 +122,9 @@ class WPZOOM_ZoomWebinarShortcode {
     $dateStart = substr( $start, 0, 10 );
 
     $datetime1 = new DateTime( $dateStart );
+    $datetime1->setTimezone( wpzoom_timezone() );
     $datetime2 = new DateTime( date('Y-m-d') );
+    $datetime2->setTimezone( wpzoom_timezone() );
     $interval = $datetime2->diff($datetime1);
 
     $sign = $interval->format('%R');

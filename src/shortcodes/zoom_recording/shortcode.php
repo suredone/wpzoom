@@ -133,7 +133,9 @@ class WPZOOM_ZoomRecordingShortcode {
     $dateStart = substr( $start, 0, 10 );
 
     $datetime1 = new DateTime( $dateStart );
+    $datetime1->setTimezone( wpzoom_timezone() );
     $datetime2 = new DateTime( date('Y-m-d') );
+    $datetime2->setTimezone( wpzoom_timezone() );
     $interval = $datetime2->diff($datetime1);
 
     $sign = $interval->format('%R');
