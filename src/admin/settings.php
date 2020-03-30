@@ -80,7 +80,7 @@ class WPZOOM_Settings {
 				'secret' => $secret
 			);
 
-			// update_option( self::OPTION_JWT_KEYS, $jwtKeys );
+			update_option( self::OPTION_JWT_KEYS, $jwtKeys );
 			wp_send_json_success( 'Congrats, changes have been updated.' );
 		} catch ( Exception $e ) {
 			wp_send_json_error( $e->getMessage(), $e->getCode() );
