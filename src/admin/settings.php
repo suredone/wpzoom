@@ -7,6 +7,8 @@ defined( 'ABSPATH' ) || exit;
 
 class WPZOOM_Settings {
 
+	const PAGE_SLUG = 'wp-zoom-settings';
+
     const OPTION_JWT_KEYS = 'wp_zoom_keys';
 
     const OPTION_REGISTRATION_PAGE = 'wp_zoom_registration_page';
@@ -14,20 +16,20 @@ class WPZOOM_Settings {
     const NONCE_ACTION_KEY = 'zoom_settings_process';
 
     public function __construct() {
-        add_action( 'admin_menu', array( $this, 'admin_page' ) );
-        add_filter( 'display_post_states', array( $this, 'add_state_label' ), 10, 2 );
-        add_action( 'admin_post_' . self::NONCE_ACTION_KEY, array( $this, 'pageSettingsProcess' ) );
+        add_action( 'admin_menu', array( $this, 'adminPage' ) );
+        add_filter( 'display_post_states', array( $this, 'addStateLabel' ), 10, 2 );
+        add_action( 'wp_ajax_' . self::NONCE_ACTION_KEY, array( $this, 'processSettingRequest' ) );
     }
 
-    public function add_state_label( $states, $post ) { 
+    public function addStateLabel( $states, $post ) {
         if ( 'page' == get_post_type( $post->ID ) && ( $post->ID == self::getRegistrationPage() ) ) {
             $states['wp-zoom-registration-page'] = 'Webinar Registration Page';
         }
 
         return $states;
-    }   
+    }
 
-    public function admin_page() {
+    public function adminPage() {
         add_options_page(
             'WP Zoom Settings',
             'WP Zoom Settings',
@@ -47,33 +49,44 @@ class WPZOOM_Settings {
     }
 
     public static function getPageLink() {
-        return admin_url( 'options-general.php?page=wp-zoom-settings' );
+        return admin_url( 'options-general.php?page=' . self::PAGE_SLUG );
     }
 
-    public function pageSettingsProcess() {
-        $verified = wp_verify_nonce( $_POST['_wpnonce'], self::NONCE_ACTION_KEY );
+    public function processSettingRequest() {
+		try {
+			if ( ! wp_verify_nonce( $_POST['_wpnonce'], self::NONCE_ACTION_KEY ) ) {
+				throw new Exception( 'Forbidden request, nice try though!', 403 );
+			}
 
-        if ( ! $verified ) {
-          admin_notices('Invalid nonce.');
-          wp_redirect( self::getPageLink() );
-        }
-    
-        $key = isset( $_POST['field-zoom-key'] ) ? sanitize_text_field( $_POST['field-zoom-key'] ) : '';
-        $secret = isset( $_POST['field-zoom-secret'] ) ? sanitize_text_field( $_POST['field-zoom-secret'] ) : '';
-        $registration_page = isset( $_POST['field-registration-page'] ) ? absint( $_POST['field-registration-page'] ) : 0;
-    
-        $jwtKeys = array(
-          'key' => $key,
-          'secret' => $secret
-        );
-    
-        update_option( self::OPTION_JWT_KEYS, $jwtKeys );
-        update_option( self::OPTION_REGISTRATION_PAGE, $registration_page );
+			$registration_page_id = isset( $_POST['field_registration_page'] ) ? absint( $_POST['field_registration_page'] ) : 0;
+			update_option( self::OPTION_REGISTRATION_PAGE, $registration_page_id );
 
-        wp_redirect( self::getPageLink() );
-        exit;
+			if ( empty( $_POST['field_zoom_key'] ) || empty( $_POST['field_zoom_secret'] ) ) {
+				throw new Exception( 'Token Key or Token Secret cannot be empty.' );
+			}
+
+			$key = sanitize_text_field( $_POST['field_zoom_key'] );
+			$secret = sanitize_text_field( $_POST['field_zoom_secret'] );
+
+			$zoomUsers = new Zoom\Endpoint\Users( $key, $secret );
+            $userResponse = $zoomUsers->list();
+
+			if ( wpzoom_is_error_response( $userResponse ) ) {
+				throw new Exception( 'Invalid Token Key or Token Secret.' );
+			}
+
+			$jwtKeys = array(
+				'key' => $key,
+				'secret' => $secret
+			);
+
+			// update_option( self::OPTION_JWT_KEYS, $jwtKeys );
+			wp_send_json_success( 'Congrats, changes have been updated.' );
+		} catch ( Exception $e ) {
+			wp_send_json_error( $e->getMessage(), $e->getCode() );
+		}
     }
-    
+
     public static function getTokenKey() {
         $jwtKeys = get_option( self::OPTION_JWT_KEYS );
         return isset( $jwtKeys['key'] ) ? $jwtKeys['key'] : '';

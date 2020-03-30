@@ -1,7 +1,7 @@
 <?php
 /**
  * Helper functions and definations.
- * 
+ *
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -10,7 +10,7 @@ defined( 'ABSPATH' ) || exit;
  * Get DateTimeZone based one WordPress timezone settings
  *
  * @see wp_timezone
- * 
+ *
  * @param string $type
  * @return DateTimeZone
  */
@@ -29,7 +29,7 @@ function wpzoom_timezone() {
  * otherwise falls back to an offset.
  *
  * Backword compatibility with wp_timezone_string
- * 
+ *
  * @see wp_timezone_string
  *
  * @return string PHP timezone string or a ±HH:MM offset.
@@ -43,7 +43,7 @@ function wpzoom_timezone_string() {
     if ( $timezone_string ) {
         return $timezone_string;
     }
-    
+
     $offset  = (float) get_option( 'gmt_offset' );
     $hours   = (int) $offset;
     $minutes = ( $offset - $hours );
@@ -81,4 +81,8 @@ function wpzoom_is_recording_playable( $recording ) {
     }
 
     return wpzoom_is_filetype_playable( $recording['file_type'] );
+}
+
+function wpzoom_is_error_response( $response ) {
+	return isset( $response['code'], $response['message'] );
 }

@@ -16,91 +16,102 @@ define( 'WP_ZOOM_VERSION', '1.0.0' );
 
 class WPZOOM_Plugin {
 
-  public function __construct() {
+	public function __construct() {
+		require_once( WP_ZOOM_PLUGIN_PATH . 'zoom/vendor/autoload.php' );
+		require_once( WP_ZOOM_PLUGIN_PATH . 'src/endpoints/Webinar.php' );
+		require_once( WP_ZOOM_PLUGIN_PATH . 'src/endpoints/Recording.php' );
 
-    require_once( WP_ZOOM_PLUGIN_PATH . 'zoom/vendor/autoload.php' );
-    require_once( WP_ZOOM_PLUGIN_PATH . 'src/endpoints/Webinar.php' );
-    require_once( WP_ZOOM_PLUGIN_PATH . 'src/endpoints/Recording.php' );
-
-    require_once( WP_ZOOM_PLUGIN_PATH . 'src/shortcodes/zoom_webinar/shortcode.php' );
-    require_once( WP_ZOOM_PLUGIN_PATH . 'src/shortcodes/zoom_calendar/shortcode.php' );
+		require_once( WP_ZOOM_PLUGIN_PATH . 'src/shortcodes/zoom_webinar/shortcode.php' );
+		require_once( WP_ZOOM_PLUGIN_PATH . 'src/shortcodes/zoom_calendar/shortcode.php' );
 		require_once( WP_ZOOM_PLUGIN_PATH . 'src/shortcodes/zoom_recording/shortcode.php' );
-    require_once( WP_ZOOM_PLUGIN_PATH . 'src/shortcodes/zoom_register/shortcode.php' );
+		require_once( WP_ZOOM_PLUGIN_PATH . 'src/shortcodes/zoom_register/shortcode.php' );
 
-    require_once( WP_ZOOM_PLUGIN_PATH . 'src/template.php' );
-    require_once( WP_ZOOM_PLUGIN_PATH . 'src/admin/settings.php' );
-    require_once( WP_ZOOM_PLUGIN_PATH . 'src/functions.php' );
-    
-    /* init shortcodes */
-    new WPZOOM_ZoomWebinarShortcode();
-    new WPZOOM_ZoomCalendarShortcode();
+		require_once( WP_ZOOM_PLUGIN_PATH . 'src/template.php' );
+		require_once( WP_ZOOM_PLUGIN_PATH . 'src/admin/settings.php' );
+		require_once( WP_ZOOM_PLUGIN_PATH . 'src/functions.php' );
+
+		/* init shortcodes */
+		new WPZOOM_ZoomWebinarShortcode();
+		new WPZOOM_ZoomCalendarShortcode();
 		new WPZOOM_ZoomRecordingShortcode();
-    new WPZOOM_ZoomRegisterShortcode();
-    new WPZOOM_Settings();
+		new WPZOOM_ZoomRegisterShortcode();
+		new WPZOOM_Settings();
 
-    add_action('wp_enqueue_scripts', array( $this, 'scripts' ));
-  }
+		add_action( 'wp_enqueue_scripts', array( $this, 'scripts' ) );
+		add_action( 'admin_enqueue_scripts', array( $this, 'enqueueAdminScripts' ) );
+	}
 
-  public function scripts() {
+	public function enqueueAdminScripts( $hook ) {
+		if ( ! isset( $_GET['page'] ) || $_GET['page'] !== WPZOOM_Settings::PAGE_SLUG ) {
+			return;
+		}
 
-    wp_enqueue_script(
-      'wp-zoom-register-js',
-      WP_ZOOM_PLUGIN_URL . 'src/shortcodes/zoom_register/assets/zoom_register.js',
-      array( 'jquery' ),
-      '1.0.0',
-      true
-    );
+		wp_enqueue_script(
+			'wp-zoom-admin',
+			WP_ZOOM_PLUGIN_URL . 'assets/script.js',
+			array( 'jquery' ),
+			WP_ZOOM_VERSION,
+			true
+		);
+	}
 
-    wp_enqueue_script(
-      'full-calendar-core-js',
-      'https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/core/main.min.js',
-      array(),
-      '4.2.0',
-      true
-    );
+	public function scripts() {
+		wp_enqueue_script(
+			'wp-zoom-register-js',
+			WP_ZOOM_PLUGIN_URL . 'src/shortcodes/zoom_register/assets/zoom_register.js',
+			array( 'jquery' ),
+			WP_ZOOM_VERSION,
+			true
+		);
 
-    wp_enqueue_script(
-      'full-calendar-daygrid',
-      'https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/daygrid/main.min.js',
-      array('full-calendar-core-js'),
-      '4.2.0',
-      true
-    );
+		wp_enqueue_script(
+			'full-calendar-core-js',
+			'https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/core/main.min.js',
+			array(),
+			'4.2.0',
+			true
+		);
 
-    wp_enqueue_script(
-      'zoom-calendar-js',
-      WP_ZOOM_PLUGIN_URL . 'src/shortcodes/zoom_calendar/assets/zoom-calendar.js',
-      array('popper-js'),
-      '1.0.0',
-      true
-    );
+		wp_enqueue_script(
+			'full-calendar-daygrid',
+			'https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/daygrid/main.min.js',
+			array('full-calendar-core-js'),
+			'4.2.0',
+			true
+		);
 
-    wp_enqueue_style(
-      'full-calendar-core-style',
-      'https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/core/main.min.css',
-      array(),
-      '4.2.0',
-      false
-    );
+		wp_enqueue_script(
+			'zoom-calendar-js',
+			WP_ZOOM_PLUGIN_URL . 'src/shortcodes/zoom_calendar/assets/zoom-calendar.js',
+			array('popper-js'),
+			'1.0.0',
+			true
+		);
 
-    wp_enqueue_style(
-      'full-calendar-daygrid-style',
-      'https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/daygrid/main.min.css',
-      array('full-calendar-core-style'),
-      '4.2.0',
-      false
-    );
+		wp_enqueue_style(
+			'full-calendar-core-style',
+			'https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/core/main.min.css',
+			array(),
+			'4.2.0',
+			false
+		);
 
-    wp_enqueue_style(
-      'wp-zoom-style',
-      WP_ZOOM_PLUGIN_URL . 'assets/wp-zoom-styles.css',
-      array('full-calendar-daygrid-style'),
-      '1.0.0',
-      false
-    );
+		wp_enqueue_style(
+			'full-calendar-daygrid-style',
+			'https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/daygrid/main.min.css',
+			array('full-calendar-core-style'),
+			'4.2.0',
+			false
+		);
 
-  }
-
+		wp_enqueue_style(
+			'wp-zoom-style',
+			WP_ZOOM_PLUGIN_URL . 'assets/wp-zoom-styles.css',
+			array('full-calendar-daygrid-style'),
+			WP_ZOOM_VERSION,
+			false
+		);
+	}
 }
 
 new WPZOOM_Plugin();
