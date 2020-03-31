@@ -62,7 +62,7 @@ class WPZOOM_Settings {
 			update_option( self::OPTION_REGISTRATION_PAGE, $registration_page_id );
 
 			if ( empty( $_POST['field_zoom_key'] ) || empty( $_POST['field_zoom_secret'] ) ) {
-				throw new Exception( 'Token Key or Token Secret cannot be empty.' );
+				throw new Exception( 'API keys cannot be empty' );
 			}
 
 			$key = sanitize_text_field( $_POST['field_zoom_key'] );
@@ -72,7 +72,7 @@ class WPZOOM_Settings {
             $userResponse = $zoomUsers->list();
 
 			if ( wpzoom_is_error_response( $userResponse ) ) {
-				throw new Exception( 'Invalid API keys, please try again with valid keys.' );
+				throw new Exception( 'Invalid API keys, please try again with valid keys' );
 			}
 
 			$jwtKeys = array(
