@@ -72,7 +72,7 @@ class WPZOOM_Settings {
             $userResponse = $zoomUsers->list();
 
 			if ( wpzoom_is_error_response( $userResponse ) ) {
-				throw new Exception( 'Invalid Token Key or Token Secret.' );
+				throw new Exception( 'Invalid API keys, please try again with valid keys.' );
 			}
 
 			$jwtKeys = array(
@@ -81,7 +81,7 @@ class WPZOOM_Settings {
 			);
 
 			update_option( self::OPTION_JWT_KEYS, $jwtKeys );
-			wp_send_json_success( 'Congrats, changes have been updated.' );
+			wp_send_json_success( 'API keys validated and saved' );
 		} catch ( Exception $e ) {
 			wp_send_json_error( $e->getMessage(), $e->getCode() );
 		}
