@@ -48,10 +48,6 @@ class WPZOOM_Settings {
         print $template->get();
     }
 
-    public static function getPageLink() {
-        return admin_url( 'options-general.php?page=' . self::PAGE_SLUG );
-    }
-
     public function processSettingRequest() {
 		try {
 			if ( ! wp_verify_nonce( $_POST['_wpnonce'], self::NONCE_ACTION_KEY ) ) {

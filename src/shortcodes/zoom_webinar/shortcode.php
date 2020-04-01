@@ -1,142 +1,157 @@
 <?php
+/**
+ * Webinar shortcode class
+ *
+ * @package WP_Zoom
+ */
+defined( 'ABSPATH' ) || exit;
 
-class WPZOOM_ZoomWebinarShortcode {
+class WPZOOM_ZoomWebinarShortcode extends WPZOOM_Shortcode {
 
-  public $tag = 'zoom_webinar';
+	public function getTag() {
+		return 'zoom_webinar';
+	}
 
-  public function __construct() {
-    add_action('init', array( $this, 'init'));
-  }
 
-  public function init() {
-    add_shortcode($this->tag, array($this, 'doShortcode'));
-  }
+	public function doShortcode( $atts, $content = null ) {
+		$atts = shortcode_atts( array(
+			'include' => '',
+			'exclude' => '',
+			'hide'    => '',
+			'days'    => ''
+		), $atts, $this->getTag() );
 
-  public function doShortcode( $atts ) {
-    $atts = shortcode_atts( array(
-      'include' => '',
-      'exclude' => '',
-      'hide'    => '',
-      'days'    => ''
-    ), $atts, 'zoom_webinar' );
+		try {
+			$key    = WPZOOM_Settings::getTokenKey();
+			$secret = WPZOOM_Settings::getTokenSecret();
 
-    $key    = WPZOOM_Settings::getTokenKey();
-    $secret = WPZOOM_Settings::getTokenSecret();
-    $zoomUsers = new Zoom\Endpoint\Users( $key, $secret );
-    $userResponse = $zoomUsers->list();
+			if ( empty( $key ) || empty( $secret ) ) {
+				throw new Exception( sprintf(
+					'You did not setup Zoom API keys yet. Please %s and setup API keys first.',
+					wpzoom_get_settings_page_anchor()
+				), WPZOOM_Shortcode::ALERT_FOR_ADMIN );
+			}
 
-    $userFirst = $userResponse['users'][0];
+			$zoomUsers = new Zoom\Endpoint\Users( $key, $secret );
+			$userResponse = $zoomUsers->list();
 
-    $zoomWebinar = new Zoom\Endpoint\Webinar( $key, $secret );
-    $webinarResponse = $zoomWebinar->list( $userFirst['id'], [] );
+			if ( wpzoom_is_error_response( $userResponse ) ) {
+				throw new Exception( sprintf(
+					'Invalid Zoom API keys. Please %s and add valid API keys.',
+					wpzoom_get_settings_page_anchor()
+				), WPZOOM_Shortcode::ALERT_FOR_ADMIN );
+			}
 
-    // prepare webinars and do processing
-    $webinars = array();
-    if( !empty( $webinarResponse['webinars'] )) {
+			if ( empty( $userResponse['users'] ) ) {
+				throw new Exception( 'No data found.', WPZOOM_Shortcode::ALERT_FOR_ALL );
+			}
 
-      $webinarsSorted = array_reverse( $webinarResponse['webinars'] );
+			$userFirst = current( $userResponse['users'] );
 
-      foreach( $webinarsSorted as $webinarData ) :
+			$zoomWebinar = new Zoom\Endpoint\Webinar( $key, $secret );
+			$webinarResponse = $zoomWebinar->list( $userFirst['id'], [] );
 
-        $webinar = new stdClass;
-        $title = $webinarData['topic'];
-        $start = $webinarData['start_time'];
+			if ( empty( $webinarResponse['webinars'] ) ) {
+				throw new Exception( 'No webinars found.', WPZOOM_Shortcode::ALERT_FOR_ALL );
+			}
 
-        // check if contains exclude words
-        if( $atts['exclude'] != '' ) {
-          if( $this->excludeFilter( $title, $atts['exclude'] )) {
-            continue;
-          }
-        }
+			// prepare webinars and do processing
+			$webinars = array();
+			$webinarsSorted = array_reverse( $webinarResponse['webinars'] );
 
-        // check if contains include words
-        if( $atts['include'] != '' ) {
-          if( $this->includeFilter( $title, $atts['include'] )) {
-            continue;
-          }
-        }
+			foreach ( $webinarsSorted as $webinarData ) {
+				$webinar = new stdClass;
+				$title = $webinarData['topic'];
+				$start = $webinarData['start_time'];
 
-        // check days into future filter
-        if( $atts['days'] != '' ) {
-          $days = $atts['days'];
-        } else {
-          $days = 365;
-        }
-        if( $this->daysFilter( $start, $days )) {
-          continue;
-        }
+				// check if contains exclude words
+				if ( $atts['exclude'] != '' && $this->excludeFilter( $title, $atts['exclude'] ) ) {
+					continue;
+				}
 
-        // handle title filtering hide
-        if( $atts['hide'] != '' ) {
-          $title = $this->prepareTitle( $title, $atts['hide'] );
-        }
-        $webinar->title = $title;
+				// check if contains include words
+				if ( $atts['include'] != '' && $this->includeFilter( $title, $atts['include'] ) ) {
+					continue;
+				}
 
-        // get the start time
-        $startTime = $webinarData['start_time'];
-        $dateTime = new DateTime( $startTime );
-        $dateTime->setTimezone( wpzoom_timezone() ); // Had to set forcefully
-        $webinar->start = $dateTime->format( 'Y-m-d' ) . ' at ' . $dateTime->format( 'g:iA' );
-        $webinar->duration = $webinarData['duration'];
+				$days = 365;
 
-        // stash webinar object
-        $webinars[] = $webinar;
+				// check days into future filter
+				if ( $atts['days'] != '' ) {
+					$days = $atts['days'];
+				}
 
-      endforeach;
+				if ( $this->daysFilter( $start, $days ) ) {
+					continue;
+				}
 
-    } else {
-      return 'No webinars to show';
-    }
+				// handle title filtering hide
+				if ( $atts['hide'] != '' ) {
+					$title = $this->prepareTitle( $title, $atts['hide'] );
+				}
 
-    /* test templating */
-    $template = new WPZOOM_Template();
-    $template->templatePath = 'src/shortcodes/zoom_webinar/templates/';
-    $template->templateName = 'table';
-    $template->data = array(
-      'webinarResponse' => $webinarResponse,
-      'webinars' => $webinars
-    );
-    return $template->get();
+				$webinar->title = $title;
 
-  }
+				// get the start time
+				$startTime = $webinarData['start_time'];
+				$dateTime = new DateTime( $startTime );
+				$dateTime->setTimezone( wpzoom_timezone() ); // Had to set forcefully
+				$webinar->start = $dateTime->format( 'Y-m-d' ) . ' at ' . $dateTime->format( 'g:iA' );
+				$webinar->duration = $webinarData['duration'];
 
-  public function prepareTitle( $originalTitle, $hide ) {
-    return str_replace( $hide, '', $originalTitle );
-  }
+				// stash webinar object
+				$webinars[] = $webinar;
+			}
 
-  public function excludeFilter( $title, $exclude ) {
-    if( strpos( $title, $exclude ) !== false ) {
-      return true;
-    }
-  }
+			/* test templating */
+			$template = new WPZOOM_Template();
+			$template->templatePath = 'src/shortcodes/zoom_webinar/templates/';
+			$template->templateName = 'table';
+			$template->data = array(
+				'webinarResponse' => $webinarResponse,
+				'webinars' => $webinars
+			);
 
-  public function includeFilter( $title, $include ) {
-    $result = strpos( $title, $include );
-    if( strpos( $title, $include ) === false ) {
-      return true;
-    }
-  }
+			return $template->get();
+		} catch ( \Exception $e ) {
+			if ( wpzoom_is_admin_alert( $e ) ) {
+				return wpzoom_get_alert( $e->getMessage() );
+			} else {
+				return wpzoom_get_alert( $e->getMessage() );
+			}
+		}
+	}
 
-  public function daysFilter( $start, $days ) {
+	public function prepareTitle( $originalTitle, $hide ) {
+		return str_replace( $hide, '', $originalTitle );
+	}
 
-    $dateStart = substr( $start, 0, 10 );
+	public function excludeFilter( $title, $exclude ) {
+		return ( strpos( $title, $exclude ) !== false );
+	}
 
-    $datetime1 = new DateTime( $dateStart );
-    $datetime1->setTimezone( wpzoom_timezone() );
-    $datetime2 = new DateTime( date('Y-m-d') );
-    $datetime2->setTimezone( wpzoom_timezone() );
-    $interval = $datetime2->diff($datetime1);
+	public function includeFilter( $title, $include ) {
+		return ( strpos( $title, $include ) === false );
+	}
 
-    $sign = $interval->format('%R');
-    if( $sign == '-' ) {
-      return true; // start in the past!
-    }
+	public function daysFilter( $start, $days ) {
+		$dateStart = substr( $start, 0, 10 );
 
-    $daysAway = $interval->format('%a');
-    if( $daysAway > $days ) {
-      return true;
-    }
+		$datetime1 = new DateTime( $dateStart );
+		$datetime1->setTimezone( wpzoom_timezone() );
+		$datetime2 = new DateTime( date( 'Y-m-d' ) );
+		$datetime2->setTimezone( wpzoom_timezone() );
+		$interval = $datetime2->diff( $datetime1 );
 
-  }
+		$sign = $interval->format( '%R' );
+		if ( $sign == '-' ) {
+			return true; // start in the past!
+		}
+
+		$daysAway = $interval->format( '%a' );
+		if ( $daysAway > $days ) {
+			return true;
+		}
+	}
 
 }

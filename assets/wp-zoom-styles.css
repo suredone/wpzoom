@@ -4,3 +4,13 @@
 .zoom-recording-shortcode {
   background: #F5F5F5;
 }
+
+.wpzoom-alert {
+	font-size: 16px;
+	position: relative;
+    padding: .5rem 1.25rem;
+    margin-bottom: 1rem;
+    border: 1px solid #b8daff;
+	color: #004085;
+    background-color: #cce5ff;
+}

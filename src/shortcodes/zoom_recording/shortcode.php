@@ -1,150 +1,141 @@
 <?php
+/**
+ * Recording shortcode class
+ *
+ * @package WP_Zoom
+ */
+defined( 'ABSPATH' ) || exit;
 
-class WPZOOM_ZoomRecordingShortcode {
+class WPZOOM_ZoomRecordingShortcode extends WPZOOM_Shortcode {
 
-  public $tag = 'zoom_recording';
+	public function getTag() {
+		return 'zoom_recording';
+	}
 
-  public function __construct() {
-    add_action('init', array( $this, 'init'));
-  }
+	public function doShortcode( $atts, $content = null ) {
+		$atts = shortcode_atts( array(
+			'include' => '',
+			'exclude' => '',
+			'hide'    => '',
+			'days'    => '',
+		), $atts, $this->getTag() );
 
-  public function init() {
-    add_shortcode($this->tag, array($this, 'doShortcode'));
-  }
+		try {
+			$key    = WPZOOM_Settings::getTokenKey();
+			$secret = WPZOOM_Settings::getTokenSecret();
 
-  public function doShortcode( $atts ) {
+			if ( empty( $key ) || empty( $secret ) ) {
+				throw new Exception( sprintf(
+					'You did not setup Zoom API keys yet. Please %s and setup API keys first.',
+					wpzoom_get_settings_page_anchor()
+				), WPZOOM_Shortcode::ALERT_FOR_ADMIN );
+			}
 
-    $atts = shortcode_atts( array(
-      'include' => '',
-      'exclude' => '',
-      'hide'    => '',
-      'days'    => ''
-    ), $atts, $this->tag );
+			$zoomUsers = new Zoom\Endpoint\Users( $key, $secret );
+			$userResponse = $zoomUsers->list();
 
-    $key    = WPZOOM_Settings::getTokenKey();
-    $secret = WPZOOM_Settings::getTokenSecret();
-    $zoomUsers = new Zoom\Endpoint\Users( $key, $secret );
-    $userResponse = $zoomUsers->list();
-    $userFirst = $userResponse['users'][0];
+			if ( wpzoom_is_error_response( $userResponse ) ) {
+				throw new Exception( sprintf(
+					'Invalid Zoom API keys. Please %s and add valid API keys.',
+					wpzoom_get_settings_page_anchor()
+				), WPZOOM_Shortcode::ALERT_FOR_ADMIN );
+			}
 
+			if ( empty( $userResponse['users'] ) ) {
+				throw new Exception( 'No data found.', WPZOOM_Shortcode::ALERT_FOR_ALL );
+			}
 
-    $zoomRecording = new Zoom\Endpoint\Recording( $key, $secret );
+			$userFirst = current( $userResponse['users'] );
+			$daysAgo = 30;
 
-    if( $atts['days'] ) {
-      $daysAgo = $atts['days'];
-    } else {
-      $daysAgo = 30;
-    }
-    $fromTime = strtotime("-" . $daysAgo . " days");
-		$fromDate = date('Y-m-d', $fromTime);
+			if ( $atts['days'] ) {
+				$daysAgo = $atts['days'];
+			}
 
-    /*
-    print '<pre>';
-    var_dump( $fromDate );
-    print '</pre>';
-    */
+			$fromTime = strtotime( '-' . $daysAgo . ' days' );
+			$fromDate = date( 'Y-m-d', $fromTime );
 
-		$args = array(
-			'from' => $fromDate
-		);
-    $response = $zoomRecording->list( $userFirst['id'], $args );
+			$args = array(
+				'from' => $fromDate
+			);
 
-    /*
-    print '<pre>';
-    var_dump( $response );
-    print '</pre>';
-    */
+			$zoomRecording = new Zoom\Endpoint\Recording( $key, $secret );
+			$response = $zoomRecording->list( $userFirst['id'], $args );
 
-    if( empty( $response['meetings'] )) {
-      return 'No recordings found.';
-    }
+			if ( empty( $response['meetings'] ) ) {
+				throw new Exception( 'No recordings found.', WPZOOM_Shortcode::ALERT_FOR_ALL );
+			}
 
-    $meetingsResponse = $response['meetings'];
+			$meetingsResponse = $response['meetings'];
 
-    /*
-    print '<pre>';
-    var_dump($meetingsResponse);
-    print '</pre>';
-    */
+			$meetings = array();
+			foreach ( $meetingsResponse as $meetingData ) {
 
-    $meetings = array();
-    foreach( $meetingsResponse as $meetingData ) {
+				$meeting = new stdClass;
+				$meeting->start = $meetingData['start_time'];
+				$meeting->title = $meetingData['topic'];
 
-      $meeting = new stdClass;
-      $meeting->start = $meetingData['start_time'];
-      $meeting->title = $meetingData['topic'];
+				// check if contains exclude words
+				if ( $atts['exclude'] != '' && $this->excludeFilter( $meeting->title, $atts['exclude'] ) ) {
+					continue;
+				}
 
-      // check if contains exclude words
-      if( $atts['exclude'] != '' ) {
-        if( $this->excludeFilter( $meeting->title, $atts['exclude'] )) {
-          continue;
-        }
-      }
+				// check if contains include words
+				if ( $atts['include'] != '' && $this->includeFilter( $meeting->title, $atts['include'] ) ) {
+					continue;
+				}
 
-      // check if contains include words
-      if( $atts['include'] != '' ) {
-        if( $this->includeFilter( $meeting->title, $atts['include'] )) {
-          continue;
-        }
-      }
+				$meeting->recording_files = $meetingData['recording_files'];
+				$meeting->recording_count = $meetingData['recording_count'];
 
-      $meeting->recording_files = $meetingData['recording_files'];
-      $meeting->recording_count = $meetingData['recording_count'];
+				$meetings[] = $meeting;
+			}
 
-      $meetings[] = $meeting;
-    }
+			$template = new WPZOOM_Template();
+			$template->templatePath = 'src/shortcodes/zoom_recording/templates/';
+			$template->templateName = 'table';
+			$template->data = array(
+				'response' => $response,
+				'meetings' => $meetings
+			);
 
-    /*
-    print '<pre>';
-    var_dump($meetings);
-    print '</pre>';
-    */
+			return $template->get();
+		} catch ( \Exception $e ) {
+			if ( wpzoom_is_admin_alert( $e ) ) {
+				return wpzoom_get_alert( $e->getMessage() );
+			} else {
+				return wpzoom_get_alert( $e->getMessage() );
+			}
+		}
+	}
 
-    $template = new WPZOOM_Template();
-    $template->templatePath = 'src/shortcodes/zoom_recording/templates/';
-    $template->templateName = 'table';
-    $template->data = array(
-      'response' => $response,
-      'meetings' => $meetings
-    );
-    return $template->get();
+	public function prepareTitle( $originalTitle, $hide ) {
+		return str_replace( $hide, '', $originalTitle );
+	}
 
-  }
+	public function includeFilter( $title, $include ) {
+		return ( strpos( $title, $include ) === false );
+	}
 
-  public function prepareTitle( $originalTitle, $hide ) {
-    return str_replace( $hide, '', $originalTitle );
-  }
+	public function excludeFilter( $title, $exclude ) {
+		return ( strpos( $title, $exclude ) !== false );
+	}
 
-  public function includeFilter( $title, $include ) {
-    $result = strpos( $title, $include );
-    if( strpos( $title, $include ) === false ) {
-      return true;
-    }
-  }
+	public function daysFilter( $start, $days ) {
+		$dateStart = substr( $start, 0, 10 );
 
-  public function excludeFilter( $title, $exclude ) {
-    if( strpos( $title, $exclude ) !== false ) {
-      return true;
-    }
-  }
+		$datetime1 = new DateTime( $dateStart );
+		$datetime1->setTimezone( wpzoom_timezone() );
+		$datetime2 = new DateTime( date( 'Y-m-d' ) );
+		$datetime2->setTimezone( wpzoom_timezone() );
+		$interval = $datetime2->diff( $datetime1 );
 
-  public function daysFilter( $start, $days ) {
+		$sign = $interval->format( '%R' );
+		$daysPast = $interval->format( '%a' );
 
-    $dateStart = substr( $start, 0, 10 );
-
-    $datetime1 = new DateTime( $dateStart );
-    $datetime1->setTimezone( wpzoom_timezone() );
-    $datetime2 = new DateTime( date('Y-m-d') );
-    $datetime2->setTimezone( wpzoom_timezone() );
-    $interval = $datetime2->diff($datetime1);
-
-    $sign = $interval->format('%R');
-
-    $daysPast = $interval->format('%a');
-    if( $daysPast > $days ) {
-      return true;
-    }
-
-  }
+		if ( $daysPast > $days ) {
+			return true;
+		}
+	}
 
 }

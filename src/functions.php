@@ -86,3 +86,19 @@ function wpzoom_is_recording_playable( $recording ) {
 function wpzoom_is_error_response( $response ) {
 	return isset( $response['code'], $response['message'] );
 }
+
+function wpzoom_get_settings_page_url() {
+	return esc_url( admin_url( 'options-general.php?page=' . WPZOOM_Settings::PAGE_SLUG ) );
+}
+
+function wpzoom_get_settings_page_anchor( $text = 'click here' ) {
+	return sprintf( '<a href="%s" target="_blank">%s</a>', wpzoom_get_settings_page_url(), $text );
+}
+
+function wpzoom_is_admin_alert( Exception $e ) {
+	return ( $e->getCode() ===  WPZOOM_Shortcode::ALERT_FOR_ADMIN && current_user_can( 'manage_options' ) );
+}
+
+function wpzoom_get_alert( $message ) {
+	return sprintf( '<div class="wpzoom-alert wpzoom-alert--info">%1$s</div>', $message );
+}
