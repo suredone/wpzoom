@@ -1,44 +1,49 @@
-(function($) {
+;(function($) {
 
-  $('.zoom-register-form form').on('submit', function(e) {
+	$(function() {
+		$zoomForm = $('#wpzoom-registration-form'),
+		$zoomParent = $zoomForm.parent('.wpzoom-registration'),
+		$spinner = $zoomForm.find('.spinner'),
+		$submitButton = $zoomForm.find('input[type="submit"]');
 
-    e.preventDefault()
-    console.log('form submit...')
+		function showMessage(msg, type) {
+			var msgArr = msg.split('\n');
+			type = type || 'info';
 
-    // validate form
-    var formErrors = []
+			if ( msgArr.length > 1 ) {
+				msgArr = msgArr.map(function(msg) {
+					return '<li>' + msg + '</li>';
+				});
+				msg = '<ul>' + msgArr.join('\n') + '</ul>';
+			}
 
-    var firstNameField = $('#zoom-field-first-name')
-    if( !validateRequired( firstNameField )) {
-      formErrors.push('First name is a required field.')
-    }
+			msg = '<div class="wpzoom-alert wpzoom-alert--'+type+'">'+msg+'</div>';
 
-    var emailField = $('#zoom-field-email')
-    if( !validateEmail( emailField )) {
-      formErrors.push('Enter a valid email address.')
-    }
+			$zoomParent.find('.wpzoom-alert').remove();
+			$zoomForm.before($(msg));
+		}
 
-    console.log( formErrors )
+		$zoomForm.on('submit', function(event) {
+			event.preventDefault();
 
-    // show form errors if present and stop processing
+			$.ajax({
+                url: $zoomForm.attr('action'),
+                data: new FormData(this),
+                processData: false,
+                contentType: false,
+				type: 'POST',
+				beforeSend: function() {
+					$submitButton.attr('disabled', true).addClass('disabled');
+				},
+            }).done(function(response) {
+				if (response.success) {
+					showMessage(response.data, 'success');
+				} else {
+					showMessage(response.data, 'error');
+				}
+				$submitButton.attr('disabled', false).removeClass('disabled');
+            });
+		});
+	});
 
-    // send validated form to ajax hook
-
-    // handle response from ajax hook process
-
-  })
-
-  function validateRequired( el ) {
-    if( el.val() === '' ) {
-      return false
-    }
-    return true
-  }
-
-  function validateEmail( el ) {
-    let email = el.val()
-    var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    return re.test(String(email).toLowerCase());
-  }
-
-})( jQuery );
+}(jQuery));

@@ -7,10 +7,45 @@
 
 .wpzoom-alert {
 	font-size: 16px;
-	position: relative;
     padding: .5rem 1.25rem;
     margin-bottom: 1rem;
-    border: 1px solid #b8daff;
-	color: #004085;
-    background-color: #cce5ff;
+    border: 1px solid transparent;
+}
+
+.wpzoom-alert > ul {
+	margin: 0;
+}
+
+.wpzoom-alert--info {
+	color: #0c5460;
+    background-color: #d1ecf1;
+    border-color: #bee5eb
+}
+
+.wpzoom-alert--success {
+    color: #155724;
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+}
+
+.wpzoom-alert--error {
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+}
+
+.wpzoom-form-field:not(:last-child) {
+	margin-bottom: 15px;
+}
+
+.wpzoom-form-field > label {
+	display: block;
+}
+
+.wpzoom-input-field {
+	width: 100%;
+}
+
+.wpzoom-register-submit {
+	margin-top: 30px
 }

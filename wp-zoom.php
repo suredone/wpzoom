@@ -49,7 +49,7 @@ class WPZOOM_Plugin {
 
 		wp_enqueue_script(
 			'wp-zoom-admin',
-			WP_ZOOM_PLUGIN_URL . 'assets/script.js',
+			WP_ZOOM_PLUGIN_URL . 'assets/admin-script.js',
 			array( 'jquery' ),
 			WP_ZOOM_VERSION,
 			true
@@ -57,15 +57,28 @@ class WPZOOM_Plugin {
 	}
 
 	public function scripts() {
-		wp_enqueue_script(
-			'wp-zoom-register-js',
-			WP_ZOOM_PLUGIN_URL . 'src/shortcodes/zoom_register/assets/zoom_register.js',
-			array( 'jquery' ),
-			WP_ZOOM_VERSION,
-			true
+		wp_enqueue_style(
+			'full-calendar-core-style',
+			'https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/core/main.min.css',
+			array(),
+			'4.2.0'
 		);
 
-		wp_enqueue_script(
+		wp_enqueue_style(
+			'full-calendar-daygrid-style',
+			'https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/daygrid/main.min.css',
+			array('full-calendar-core-style'),
+			'4.2.0'
+		);
+
+		wp_enqueue_style(
+			'wp-zoom-style',
+			WP_ZOOM_PLUGIN_URL . 'assets/wp-zoom-styles.css',
+			array('full-calendar-daygrid-style'),
+			WP_ZOOM_VERSION
+		);
+
+		wp_register_script(
 			'full-calendar-core-js',
 			'https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/core/main.min.js',
 			array(),
@@ -73,44 +86,28 @@ class WPZOOM_Plugin {
 			true
 		);
 
-		wp_enqueue_script(
+		wp_register_script(
 			'full-calendar-daygrid',
 			'https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/daygrid/main.min.js',
-			array('full-calendar-core-js'),
+			array( 'full-calendar-core-js' ),
 			'4.2.0',
 			true
 		);
 
-		wp_enqueue_script(
+		wp_register_script(
 			'zoom-calendar-js',
 			WP_ZOOM_PLUGIN_URL . 'src/shortcodes/zoom_calendar/assets/zoom-calendar.js',
-			array('popper-js'),
+			array( 'full-calendar-daygrid' ),
 			'1.0.0',
 			true
 		);
 
-		wp_enqueue_style(
-			'full-calendar-core-style',
-			'https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/core/main.min.css',
-			array(),
-			'4.2.0',
-			false
-		);
-
-		wp_enqueue_style(
-			'full-calendar-daygrid-style',
-			'https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/daygrid/main.min.css',
-			array('full-calendar-core-style'),
-			'4.2.0',
-			false
-		);
-
-		wp_enqueue_style(
-			'wp-zoom-style',
-			WP_ZOOM_PLUGIN_URL . 'assets/wp-zoom-styles.css',
-			array('full-calendar-daygrid-style'),
+		wp_register_script(
+			'wpzoom-register',
+			WP_ZOOM_PLUGIN_URL . 'src/shortcodes/zoom_register/assets/zoom_register.js',
+			array( 'jquery' ),
 			WP_ZOOM_VERSION,
-			false
+			true
 		);
 	}
 }

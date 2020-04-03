@@ -54,6 +54,8 @@ class WPZOOM_ZoomCalendarShortcode extends WPZOOM_Shortcode {
 				throw new Exception( 'No webinars found.', WPZOOM_Shortcode::ALERT_FOR_ALL );
 			}
 
+			wp_enqueue_script( 'zoom-calendar-js' );
+
 			wp_localize_script(
 				'zoom-calendar-js',
 				'wpZoomWebinars',
