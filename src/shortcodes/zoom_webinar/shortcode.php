@@ -18,8 +18,11 @@ class WPZOOM_ZoomWebinarShortcode extends WPZOOM_Shortcode {
 			'include' => '',
 			'exclude' => '',
 			'hide'    => '',
-			'days'    => ''
+			'days'    => '',
+			'registration' => 'internal',
 		), $atts, $this->getTag() );
+
+		$isExternalRegistration = $atts['registration'] === 'external' ? true : false;
 
 		try {
 			$key    = WPZOOM_Settings::getTokenKey();
@@ -98,6 +101,11 @@ class WPZOOM_ZoomWebinarShortcode extends WPZOOM_Shortcode {
 				$dateTime->setTimezone( wpzoom_timezone() ); // Had to set forcefully
 				$webinar->start = $dateTime->format( 'Y-m-d' ) . ' at ' . $dateTime->format( 'g:iA' );
 				$webinar->duration = $webinarData['duration'];
+				$webinar->id = $webinarData['id'];
+
+				if ( $isExternalRegistration && isset( $webinarData['join_url'] ) ) {
+					$webinar->joinUrl = $webinarData['join_url'];
+				}
 
 				// stash webinar object
 				$webinars[] = $webinar;
@@ -109,7 +117,7 @@ class WPZOOM_ZoomWebinarShortcode extends WPZOOM_Shortcode {
 			$template->templateName = 'table';
 			$template->data = array(
 				'webinarResponse' => $webinarResponse,
-				'webinars' => $webinars
+				'webinars' => $webinars,
 			);
 
 			return $template->get();

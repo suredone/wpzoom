@@ -102,3 +102,13 @@ function wpzoom_is_admin_alert( Exception $e ) {
 function wpzoom_get_alert( $message ) {
 	return sprintf( '<div class="wpzoom-alert wpzoom-alert--info">%1$s</div>', $message );
 }
+
+function wpzoom_webinar_register_button( $webinar ) {
+	if ( isset( $webinar->joinUrl ) ) {
+		$anchor = sprintf( '<a class="button" href="%s" target="_blnk">Register</a>', esc_url( $webinar->joinUrl ) );
+	} else {
+		$url = add_query_arg( array( 'wid' => $webinar->id ), WPZOOM_Settings::getRegistrationPageLink() );
+		$anchor = sprintf( '<a class="button" href="%s">Register</a>', esc_url( $url ) );
+	}
+	echo $anchor;
+}

@@ -117,7 +117,7 @@ class WPZOOM_ZoomRegisterShortcode extends WPZOOM_Shortcode {
 			);
 
 			if ( wpzoom_is_error_response( $registerResponse ) ) {
-				if ( current_user_can( 'manage_options' ) ) {
+				if ( current_user_can( 'manage_options' ) && $registerResponse['code'] === 124 ) {
 					throw new Exception( sprintf(
 						'Invalid Zoom API keys. Please %s and add valid API keys.',
 						wpzoom_get_settings_page_anchor()
