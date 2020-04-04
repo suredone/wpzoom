@@ -46,6 +46,35 @@
 	width: 100%;
 }
 
+.wpzoom-input-field--error {
+	border: 1px solid rgb(239, 94, 109) !important;
+}
+
 .wpzoom-register-submit {
 	margin-top: 30px
+}
+
+.wpzoom-registration-form--processing {
+	position: relative;
+}
+
+.wpzoom-form-spinner {
+	display: none;
+	position: absolute;
+	left: 0;
+	top: 0;
+	height: 100%;
+	width: 100%;
+	background-color: rgba(255, 255, 255, .7);
+}
+
+.wpzoom-form-spinner > img {
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	transform: translate(-50%,-50%);
+}
+
+.wpzoom-registration-form--processing .wpzoom-form-spinner {
+	display: block;
 }

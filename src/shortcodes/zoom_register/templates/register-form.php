@@ -29,5 +29,9 @@
 		<div class="wpzoom-form-field">
 			<input class="wpzoom-register-submit" value="<?php echo esc_attr( $buttonText ); ?>" type="submit" />
 		</div>
+
+		<div class="wpzoom-form-spinner" role="presentation">
+			<img src="<?php echo esc_url( get_admin_url() . 'images/spinner.gif' ); ?>" />
+		</div>
 	</form>
 </div>

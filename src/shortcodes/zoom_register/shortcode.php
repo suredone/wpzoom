@@ -76,25 +76,64 @@ class WPZOOM_ZoomRegisterShortcode extends WPZOOM_Shortcode {
 			$errors = [];
 
 			if ( empty( $firstName ) ) {
-				$errors[] = 'First name cannot be empty.';
+				$errors['first_name'] = 'First name cannot be empty.';
 			}
 
 			if ( empty( $lastName ) ) {
-				$errors[] = 'Last name cannot be empty.';
+				$errors['last_name'] = 'Last name cannot be empty.';
 			}
 
 			if ( empty( $email ) || ! is_email( $email ) ) {
-				$errors[] = 'Add a valid email address.';
+				$errors['email'] = 'Add a valid email address.';
 			}
 
 			if ( count( $errors ) > 0 ) {
-				throw new Exception( implode( "\n", $errors ) );
+				throw new Exception( wp_json_encode( $errors ) );
 			}
 
-			/**
-			 * TODO: send request and check response
-			 */
+			$key    = WPZOOM_Settings::getTokenKey();
+			$secret = WPZOOM_Settings::getTokenSecret();
 
+			if ( empty( $key ) || empty( $secret ) ) {
+				if ( current_user_can( 'manage_options' ) ) {
+					throw new Exception( sprintf(
+						'You did not setup Zoom API keys yet. Please %s and setup API keys first.',
+						wpzoom_get_settings_page_anchor()
+					), WPZOOM_Shortcode::ALERT_FOR_ADMIN );
+				} else {
+					throw new Exception( 'There is something wrong, please contact support.' );
+				}
+			}
+
+			$zoomWebinar = new Zoom\Endpoint\Webinar( $key, $secret );
+			$registerResponse = $zoomWebinar->register(
+				$webinarId,
+				array(
+					'email' => $email,
+					'first_name' => $firstName,
+					'last_name' => $lastName,
+					'phone' => $phone
+				)
+			);
+
+			if ( wpzoom_is_error_response( $registerResponse ) ) {
+				if ( current_user_can( 'manage_options' ) ) {
+					throw new Exception( sprintf(
+						'Invalid Zoom API keys. Please %s and add valid API keys.',
+						wpzoom_get_settings_page_anchor()
+					), WPZOOM_Shortcode::ALERT_FOR_ADMIN );
+				} else {
+					throw new Exception( 'There is something wrong, please contact support.' );
+				}
+			}
+
+			if ( ! isset( $registerResponse['registrant_id'] ) ) {
+				if ( current_user_can( 'manage_options' ) ) {
+					throw new Exception( 'There is no registrant id!', WPZOOM_Shortcode::ALERT_FOR_ADMIN );
+				} else {
+					throw new Exception( 'There is something wrong, please contact support.' );
+				}
+			}
 
 			wp_send_json_success( 'Congratualtions! You have successfully registered.' );
 		} catch ( \Exception $e ) {

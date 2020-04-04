@@ -27,7 +27,7 @@ print '</pre>';
           <?php print $webinar->duration; ?> Minutes
         </td>
         <td>
-          <a class="button" href="<?php echo esc_url( WPZOOM_Settings::getRegistrationPageLink() ); ?>">Register</a>
+          <a class="button" href="<?php echo esc_url( add_query_arg( array( 'wid' => $webinar->id ), WPZOOM_Settings::getRegistrationPageLink() ) ); ?>">Register</a>
         </td>
       </tr>
     <?php endforeach; ?>
