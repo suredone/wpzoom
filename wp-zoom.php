@@ -26,6 +26,7 @@ class WPZOOM_Plugin {
 		require_once( WP_ZOOM_PLUGIN_PATH . 'src/shortcodes/zoom_calendar/shortcode.php' );
 		require_once( WP_ZOOM_PLUGIN_PATH . 'src/shortcodes/zoom_recording/shortcode.php' );
 		require_once( WP_ZOOM_PLUGIN_PATH . 'src/shortcodes/zoom_register/shortcode.php' );
+		require_once( WP_ZOOM_PLUGIN_PATH . 'src/shortcodes/zoom_webinar/recurring.php' );
 
 		require_once( WP_ZOOM_PLUGIN_PATH . 'src/template.php' );
 		require_once( WP_ZOOM_PLUGIN_PATH . 'src/admin/settings.php' );

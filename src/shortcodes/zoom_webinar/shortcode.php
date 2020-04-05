@@ -67,6 +67,13 @@ class WPZOOM_ZoomWebinarShortcode extends WPZOOM_Shortcode {
 				$title = $webinarData['topic'];
 				$start = $webinarData['start_time'];
 
+				/**
+				 * Recurring webinar has a type flag with value 6 and 9
+				 * 6 - Recurring webinar with no fixed time
+				 * 9 - Recurring webinar with a fixed time
+				 */
+				$webinar->isRecurring = in_array( $webinarData['type'], [6,9] );
+
 				// check if contains exclude words
 				if ( $atts['exclude'] != '' && $this->excludeFilter( $title, $atts['exclude'] ) ) {
 					continue;
@@ -116,7 +123,7 @@ class WPZOOM_ZoomWebinarShortcode extends WPZOOM_Shortcode {
 			$template->templatePath = 'src/shortcodes/zoom_webinar/templates/';
 			$template->templateName = 'table';
 			$template->data = array(
-				'webinarResponse' => $webinarResponse,
+				'zoomWebinar' => $zoomWebinar,
 				'webinars' => $webinars,
 			);
 

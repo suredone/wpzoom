@@ -29,8 +29,12 @@ class Webinar extends Request {
 		return $this->get("users/{$userId}/webinars", $query);
 	}
 
-	public function register(int $webinarId, array $args = []) {
+	public function register($webinarId, array $args = []) {
 		return $this->post( "webinars/{$webinarId}/registrants", $args );
+	}
+
+	public function getDetails($webinarId, array $query = []) {
+		return $this->get("webinars/{$webinarId}", $query);
 	}
 
 }
