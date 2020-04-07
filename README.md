@@ -29,6 +29,75 @@ The WP Zoom plugin provides a settings page in the WP Admin under Settings > WP 
 
 2. Visit the API key settings page at Settings > WP Zoom Settings and enter your JWT token keys. Link is yourdomain.com/wp-admin/options-general.php?page=wp-zoom-settings. Visit Zoom Marketplace for instructions on generating your JWT keys at https://marketplace.zoom.us/docs/guides/auth/jwt.
 
+== Shortcode Usage ==
+
+WP Zoom provides 4 shortcodes, a summary is provided in the list below.
+
+1. [zoom_webinar] - Table list of upcoming webinars.
+2. [zoom_calendar] - Calendar of upcoming webinars.
+3. [zoom_recording] - List of webinar recordings with audio playback or download.
+4. [zoom_register] - Registration form for a given webinar.
+
+=== Shortcode [zoom_webinar] ===
+
+The Zoom Webinar shortcode has 5 attributes available. No attributes are required so you can use the shortcode as [zoom_webinar].
+
+Attribute "include"
+
+This is a filtering attribute that will search the title of your webinars and only show webinars that have the string specified in the include attribute. All other webinars will be removed from the list.
+
+Example: [zoom_webinar include="Weekly Scrum"]
+
+In the example above only webinars with the string "Weekly Scrum" in the title will be shown on the list.
+
+Attribute "exclude"
+
+This is a filtering attribute that works in the opposite manner as "include", where Webinars with a matching string in the title will be removed from the list.
+
+Example: [zoom_webinar exclude="Private Meetings"]
+
+In the example above webinars with the string "Private Meetings" in the title will be removed from the list.
+
+Attribute "hide"
+
+This attribute allows you to change the title of the webinar shown by removing the matching part of the title.
+
+Example: [zoom_webinar hide="Approval "]
+
+In the example above webinars with a title such as "Q1 Budget Approval Meeting" would be displayed as "Q1 Budget Meeting". Note that if you're removing words in the midst of the title you may also want to remove extra spaces, which is why the example shows "Approval " instead of "Approval".
+
+Attribute "days"
+
+The days attribute allows you to specify how many days forward of the current date you want webinars to be listed. It allows you to setup for instance a 7-day or 30-day list of upcoming webinars, excluding any webinars beyond that time period.
+
+Example: [zoom_webinar days="7"]
+
+In the example above the list will show only webinars with a date in the upcoming 7-days.
+
+Attribute "registration"
+
+The registration attribute enables you to choose between "internal" or "external" registration for each webinar in the list. The default if you do not provide this attribute is "internal", which means that the WP Zoom webinar registration form will be linked from each webinar listing. Switching to external results in the register link pointing to the zoom.com registration form.
+
+If using the external (zoom.com) registration form, make sure it is publicly accessible.
+
+If using the internal (WP Zoom) registration form (default option), make sure you've set the "Registration Page" option under WP Zoom settings in the WP Admin at Settings > WP Zoom.
+
+Example: [zoom_webinar registration="external"]
+
+In the example above we switch to using external registration and the registration link will point to the webinar registration form at zoom.com. 
+
+=== Shortcode [zoom_calendar] ===
+
+@TODO
+
+=== Shortcode [zoom_recording] ===
+
+@TODO
+
+=== Shortcode [zoom_register] ===
+
+@TODO
+
 == Changelog ==
 
 # 1.0.0
