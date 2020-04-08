@@ -33,6 +33,23 @@ class WPZOOM_ZoomRegisterShortcode extends WPZOOM_Shortcode {
 				throw new Exception( 'You must have reached this page by mistake', self::ALERT_FOR_ADMIN );
 			}
 
+			$key    = WPZOOM_Settings::getTokenKey();
+			$secret = WPZOOM_Settings::getTokenSecret();
+
+			if ( empty( $key ) || empty( $secret ) ) {
+				throw new Exception( sprintf(
+					'You did not setup Zoom API keys yet. Please %s and setup API keys first.',
+					wpzoom_get_settings_page_anchor()
+				), WPZOOM_Shortcode::ALERT_FOR_ADMIN );
+			}
+
+			$zoomWebinar = new Zoom\Endpoint\Webinar( $key, $secret );
+			$webinarQuestions = $zoomWebinar->getQuestions($webinarId);
+
+			if ( ! isset($webinarQuestions['code']) || $webinarQuestions['code'] !== 200 ) {
+				throw new Exception( 'Webinar not found!',WPZOOM_Shortcode::ALERT_FOR_ALL );
+			}
+
 			wp_enqueue_script( 'wpzoom-register' );
 
 			$template = new WPZOOM_Template();
@@ -40,7 +57,8 @@ class WPZOOM_ZoomRegisterShortcode extends WPZOOM_Shortcode {
 			$template->templateName = 'register-form';
 			$template->data = array(
 				'buttonText' => $atts['button_text'],
-				'webinarId' => $webinarId
+				'webinarId' => $webinarId,
+				'webinarQuestions' => $webinarQuestions,
 			);
 
 			return $template->get();
@@ -68,27 +86,47 @@ class WPZOOM_ZoomRegisterShortcode extends WPZOOM_Shortcode {
 				throw new Exception( 'You must have reached this page by mistake or you did not select any webinar.' );
 			}
 
-			$firstName = isset( $_POST['first_name'] ) ? sanitize_text_field( $_POST['first_name'] ) : '';
-			$lastName = isset( $_POST['last_name'] ) ? sanitize_text_field( $_POST['last_name'] ) : '';
-			$email = isset( $_POST['email'] ) ? sanitize_email( $_POST['email'] ) : '';
-			$phone = isset( $_POST['phone'] ) ? sanitize_text_field( $_POST['phone'] ) : '';
+			if (!isset($_POST['wpzoom_fields']) || empty($_POST['wpzoom_fields'])) {
+				throw new Exception('There is something wrong with your request!');
+			}
+
+			$fields = wp_unslash($_POST['wpzoom_fields']);
+			$fields = json_decode($fields, true);
+
+			$questions = isset($fields['q']) ? $fields['q'] : [];
+			$customQuestions = isset($fields['cq']) ? $fields['cq'] : [];
 
 			$errors = [];
 
-			if ( empty( $firstName ) ) {
-				$errors['first_name'] = 'First name cannot be empty.';
+			$mq = [];
+			foreach ($questions as $qk => $qd ) {
+				if (!isset($_POST[$qk]) || trim($_POST[$qk]) === '') {
+					$errors[$qk] = sprintf('%s is missing', $qd['title']);
+					continue;
+				}
+				$mq[$qk] = sanitize_text_field( $_POST[$qk] );
 			}
 
-			if ( empty( $lastName ) ) {
-				$errors['last_name'] = 'Last name cannot be empty.';
+			$cq = [];
+			foreach ($customQuestions as $qd ) {
+				if (!isset($qd['title'])) {
+					continue;
+				}
+
+				$key = sanitize_key($qd['title']);
+				if (!isset($_POST[$key]) || trim($_POST[$key]) === '') {
+					$errors[$qk] = sprintf('%s is missing', $qd['title']);
+					continue;
+				}
+
+				$cq[] = [
+					'title' => $qd['title'],
+					'value' => sanitize_text_field( $_POST[$key] ),
+				];
 			}
 
-			if ( empty( $email ) || ! is_email( $email ) ) {
-				$errors['email'] = 'Add a valid email address.';
-			}
-
-			if ( count( $errors ) > 0 ) {
-				throw new Exception( wp_json_encode( $errors ) );
+			if (!empty($errors)) {
+				throw new Exception(wp_json_encode($errors));
 			}
 
 			$key    = WPZOOM_Settings::getTokenKey();
@@ -105,15 +143,10 @@ class WPZOOM_ZoomRegisterShortcode extends WPZOOM_Shortcode {
 				}
 			}
 
-			$zoomWebinar = new Zoom\Endpoint\Webinar( $key, $secret );
+			$zoomWebinar = new Zoom\Endpoint\Webinar($key, $secret);
 			$registerResponse = $zoomWebinar->register(
 				$webinarId,
-				array(
-					'email' => $email,
-					'first_name' => $firstName,
-					'last_name' => $lastName,
-					'phone' => $phone
-				)
+				array_merge($mq, ['custom_questions' => $cq])
 			);
 
 			if ( wpzoom_is_error_response( $registerResponse ) ) {

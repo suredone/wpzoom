@@ -37,4 +37,7 @@ class Webinar extends Request {
 		return $this->get("webinars/{$webinarId}", $query);
 	}
 
+	public function getQuestions($webinarId) {
+		return $this->get("webinars/{$webinarId}/registrants/questions");
+	}
 }
