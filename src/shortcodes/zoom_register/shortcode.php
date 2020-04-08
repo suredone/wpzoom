@@ -99,6 +99,11 @@ class WPZOOM_ZoomRegisterShortcode extends WPZOOM_Shortcode {
 			$errors = [];
 
 			$mq = [];
+
+			if (! empty($_POST['occurrence_id'])) {
+				$mq['occurrence_id'] = $_POST['occurrence_id'];
+			}
+
 			foreach ($questions as $qk => $qd ) {
 				if (!isset($_POST[$qk]) || trim($_POST[$qk]) === '') {
 					$errors[$qk] = sprintf('%s is missing', $qd['title']);

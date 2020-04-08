@@ -4,6 +4,7 @@
 	<form id="wpzoom-registration-form" method="POST" action="<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>">
 		<input type="hidden" name="action" value="<?php echo WPZOOM_ZoomRegisterShortcode::ACTION_NONCE_KEY; ?>">
 		<input type="hidden" name="webinar_id" value="<?php echo esc_attr( $webinarId ); ?>">
+		<input type="hidden" name="occurrence_id" value="<?php echo ( isset( $_GET['oid'] ) ? esc_attr( $_GET['oid'] ) : 0 ); ?>">
 		<?php wp_nonce_field( WPZOOM_ZoomRegisterShortcode::ACTION_NONCE_KEY ); ?>
 
 		<?php

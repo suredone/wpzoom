@@ -38,7 +38,7 @@ class WPZOOM_Recurring_Webinar {
 				<td><?php echo 'Re: ' . $this->parentWebinar->title; ?></td>
 				<td><?php echo $this->getFormattedTime($webinar['start_time']); ?></td>
 				<td><?php echo $webinar['duration']; ?> Minutes</td>
-				<td><?php wpzoom_webinar_register_button($this->parentWebinar); ?></td>
+				<td><?php wpzoom_webinar_register_button($this->parentWebinar, $webinar['occurrence_id']); ?></td>
 			</tr>
 			<?php
 		endforeach;
