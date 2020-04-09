@@ -35,15 +35,21 @@
 }
 
 .wpzoom-form-field:not(:last-child) {
-	margin-bottom: 15px;
+	margin-bottom: 20px;
 }
 
-.wpzoom-form-field > label {
+.wpzoom-form-label {
 	display: block;
+	margin-bottom: 10px;
 }
 
 .wpzoom-input-field {
 	width: 100%;
+}
+
+.wpzoom-field-field--radio label:not(.wpzoom-input-field),
+.wpzoom-field-field--multiple label:not(.wpzoom-input-field) {
+	margin-right: 10px;
 }
 
 .wpzoom-input-field--error {

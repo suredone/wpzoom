@@ -6,6 +6,8 @@
 		$spinner = $zoomForm.find('.spinner'),
 		$submitButton = $zoomForm.find('input[type="submit"]');
 
+		$submitButton.attr('disabled', false);
+
 		$zoomForm.on('keyup', '.wpzoom-input-field', function() {
 			$(this).removeClass('wpzoom-input-field--error');
 		});
