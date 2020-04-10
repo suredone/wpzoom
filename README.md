@@ -84,11 +84,43 @@ If using the internal (WP Zoom) registration form (default option), make sure yo
 
 Example: [zoom_webinar registration="external"]
 
-In the example above we switch to using external registration and the registration link will point to the webinar registration form at zoom.com. 
+In the example above we switch to using external registration and the registration link will point to the webinar registration form at zoom.com.
 
 === Shortcode [zoom_calendar] ===
 
-@TODO
+The Zoom Webinar shortcode has 4 attributes available. No attributes are required so you can use the shortcode as [zoom_webinar].
+
+Attribute "include"
+
+This is a filtering attribute that will search the title of your webinars and only show webinars that have the string specified in the include attribute. All other webinars will be removed from the list.
+
+Example: [zoom_calendar include="Weekly Scrum"]
+
+In the example above only webinars with the string "Weekly Scrum" in the title will be shown on the list.
+
+Attribute "exclude"
+
+This is a filtering attribute that works in the opposite manner as "include", where Webinars with a matching string in the title will be removed from the list.
+
+Example: [zoom_calendar exclude="Private Meetings"]
+
+In the example above webinars with the string "Private Meetings" in the title will be removed from the list.
+
+Attribute "hide"
+
+This attribute allows you to change the title of the webinar shown by removing the matching part of the title.
+
+Example: [zoom_calendar hide="Approval "]
+
+In the example above webinars with a title such as "Q1 Budget Approval Meeting" would be displayed as "Q1 Budget Meeting". Note that if you're removing words in the midst of the title you may also want to remove extra spaces, which is why the example shows "Approval " instead of "Approval".
+
+Attribute "days"
+
+The days attribute allows you to specify how many days forward of the current date you want webinars to be listed. It allows you to setup for instance a 7-day or 30-day list of upcoming webinars, excluding any webinars beyond that time period.
+
+Example: [zoom_calendar days="7"]
+
+In the example above the list will show only webinars with a date in the upcoming 7-days.
 
 === Shortcode [zoom_recording] ===
 
