@@ -128,12 +128,9 @@ class ZOOMPRESS_ZoomWebinarShortcode extends ZOOMPRESS_Shortcode {
 			);
 
 			return $template->get();
+
 		} catch ( \Exception $e ) {
-			if ( zoompress_is_admin_alert( $e ) ) {
-				return zoompress_get_alert( $e->getMessage() );
-			} else {
-				return zoompress_get_alert( $e->getMessage() );
-			}
+			return zoompress_get_alert( $e->getMessage() );
 		}
 	}
 
