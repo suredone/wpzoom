@@ -7,8 +7,8 @@
 defined( 'ABSPATH' ) || exit;
 
 ?>
-<div class="wpzoom-shortcode-webinar">
-	<table class="wpzoom-table">
+<div class="zoompress-shortcode-webinar">
+	<table class="zoompress-table">
 		<thead>
 			<tr>
 				<th>Title</th>
@@ -23,11 +23,11 @@ defined( 'ABSPATH' ) || exit;
 				<td><?php print $webinar->title; ?></td>
 				<td><?php print $webinar->start; ?></td>
 				<td><?php print $webinar->duration; ?> Minutes</td>
-				<td><?php wpzoom_webinar_register_button($webinar); ?></td>
+				<td><?php zoompress_webinar_register_button($webinar); ?></td>
 			</tr>
 			<?php
 			if ( $webinar->isRecurring ) {
-				$recurringWebinars = new WPZOOM_Recurring_Webinar($zoomWebinar,$webinar);
+				$recurringWebinars = new ZOOMPRESS_Recurring_Webinar($zoomWebinar,$webinar);
 				$recurringWebinars->render();
 			}
 			?>

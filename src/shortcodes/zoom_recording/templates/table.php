@@ -12,7 +12,7 @@
         <?php
         foreach( $meetings as $meeting ) :
             $dateTime = new DateTime( $meeting->start );
-            $dateTime->setTimezone( wpzoom_timezone() ); // Had to set forcefully
+            $dateTime->setTimezone( zoompress_timezone() ); // Had to set forcefully
             $startTime = $dateTime->format( 'Y-m-d' ) . ' at ' . $dateTime->format( 'g:iA' );
             ?>
             <tr>
@@ -24,7 +24,7 @@
                 <?php
                 if( $meeting->recording_count >= 1 ) :
                     foreach( $meeting->recording_files as $recording ) :
-                        if ( ! wpzoom_is_recording_playable( $recording ) ) {
+                        if ( ! zoompress_is_recording_playable( $recording ) ) {
                             continue;
                         }
                         $mimeType = sprintf( 'audio/%s', strtolower( $recording['file_type'] ) );

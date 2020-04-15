@@ -6,7 +6,7 @@
  */
 defined( 'ABSPATH' ) || exit;
 
-class WPZOOM_Recurring_Webinar {
+class ZOOMPRESS_Recurring_Webinar {
 
 	protected $webinars = null;
 
@@ -38,7 +38,7 @@ class WPZOOM_Recurring_Webinar {
 				<td><?php echo 'Re: ' . $this->parentWebinar->title; ?></td>
 				<td><?php echo $this->getFormattedTime($webinar['start_time']); ?></td>
 				<td><?php echo $webinar['duration']; ?> Minutes</td>
-				<td><?php wpzoom_webinar_register_button($this->parentWebinar, $webinar['occurrence_id']); ?></td>
+				<td><?php zoompress_webinar_register_button($this->parentWebinar, $webinar['occurrence_id']); ?></td>
 			</tr>
 			<?php
 		endforeach;
@@ -46,7 +46,7 @@ class WPZOOM_Recurring_Webinar {
 
 	protected function getFormattedTime( $time ) {
 		$dateTime = new DateTime( $time );
-		$dateTime->setTimezone( wpzoom_timezone() ); // Had to set forcefully
+		$dateTime->setTimezone( zoompress_timezone() ); // Had to set forcefully
 		return $dateTime->format( 'Y-m-d' ) . ' at ' . $dateTime->format( 'g:iA' );
 	}
 }

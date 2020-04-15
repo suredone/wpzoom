@@ -6,9 +6,9 @@
  */
 defined( 'ABSPATH' ) || exit;
 
-class WPZOOM_ZoomRegisterShortcode extends WPZOOM_Shortcode {
+class ZOOMPRESS_ZoomRegisterShortcode extends ZOOMPRESS_Shortcode {
 
-	const ACTION_NONCE_KEY = 'wpzoom_register';
+	const ACTION_NONCE_KEY = 'zoompress_register';
 
 	public function __construct() {
 		parent::__construct();
@@ -33,26 +33,26 @@ class WPZOOM_ZoomRegisterShortcode extends WPZOOM_Shortcode {
 				throw new Exception( 'You must have reached this page by mistake', self::ALERT_FOR_ADMIN );
 			}
 
-			$key    = WPZOOM_Settings::getTokenKey();
-			$secret = WPZOOM_Settings::getTokenSecret();
+			$key    = ZOOMPRESS_Settings::getTokenKey();
+			$secret = ZOOMPRESS_Settings::getTokenSecret();
 
 			if ( empty( $key ) || empty( $secret ) ) {
 				throw new Exception( sprintf(
 					'You did not setup Zoom API keys yet. Please %s and setup API keys first.',
-					wpzoom_get_settings_page_anchor()
-				), WPZOOM_Shortcode::ALERT_FOR_ADMIN );
+					zoompress_get_settings_page_anchor()
+				), ZOOMPRESS_Shortcode::ALERT_FOR_ADMIN );
 			}
 
 			$zoomWebinar = new Zoom\Endpoint\Webinar( $key, $secret );
 			$webinarQuestions = $zoomWebinar->getQuestions($webinarId);
 
 			if ( ! isset($webinarQuestions['code']) || $webinarQuestions['code'] !== 200 ) {
-				throw new Exception( 'Webinar not found!',WPZOOM_Shortcode::ALERT_FOR_ALL );
+				throw new Exception( 'Webinar not found!',ZOOMPRESS_Shortcode::ALERT_FOR_ALL );
 			}
 
-			wp_enqueue_script( 'wpzoom-register' );
+			wp_enqueue_script( 'zoompress-register' );
 
-			$template = new WPZOOM_Template();
+			$template = new ZOOMPRESS_Template();
 			$template->templatePath = 'src/shortcodes/zoom_register/templates/';
 			$template->templateName = 'register-form';
 			$template->data = array(
@@ -63,10 +63,10 @@ class WPZOOM_ZoomRegisterShortcode extends WPZOOM_Shortcode {
 
 			return $template->get();
 		} catch ( \Exception $e ) {
-			if ( wpzoom_is_admin_alert( $e ) ) {
-				return wpzoom_get_alert( $e->getMessage() );
+			if ( zoompress_is_admin_alert( $e ) ) {
+				return zoompress_get_alert( $e->getMessage() );
 			} else {
-				return wpzoom_get_alert( $e->getMessage() );
+				return zoompress_get_alert( $e->getMessage() );
 			}
 		}
 	}
@@ -86,11 +86,11 @@ class WPZOOM_ZoomRegisterShortcode extends WPZOOM_Shortcode {
 				throw new Exception( 'You must have reached this page by mistake or you did not select any webinar.' );
 			}
 
-			if (!isset($_POST['wpzoom_fields']) || empty($_POST['wpzoom_fields'])) {
+			if (!isset($_POST['zoompress_fields']) || empty($_POST['zoompress_fields'])) {
 				throw new Exception('There is something wrong with your request!');
 			}
 
-			$fields = wp_unslash($_POST['wpzoom_fields']);
+			$fields = wp_unslash($_POST['zoompress_fields']);
 			$fields = json_decode($fields, true);
 
 			$questions = isset($fields['q']) ? $fields['q'] : [];
@@ -134,15 +134,15 @@ class WPZOOM_ZoomRegisterShortcode extends WPZOOM_Shortcode {
 				throw new Exception(wp_json_encode($errors));
 			}
 
-			$key    = WPZOOM_Settings::getTokenKey();
-			$secret = WPZOOM_Settings::getTokenSecret();
+			$key    = ZOOMPRESS_Settings::getTokenKey();
+			$secret = ZOOMPRESS_Settings::getTokenSecret();
 
 			if ( empty( $key ) || empty( $secret ) ) {
 				if ( current_user_can( 'manage_options' ) ) {
 					throw new Exception( sprintf(
 						'You did not setup Zoom API keys yet. Please %s and setup API keys first.',
-						wpzoom_get_settings_page_anchor()
-					), WPZOOM_Shortcode::ALERT_FOR_ADMIN );
+						zoompress_get_settings_page_anchor()
+					), ZOOMPRESS_Shortcode::ALERT_FOR_ADMIN );
 				} else {
 					throw new Exception( 'There is something wrong, please contact support.' );
 				}
@@ -154,12 +154,12 @@ class WPZOOM_ZoomRegisterShortcode extends WPZOOM_Shortcode {
 				array_merge($mq, ['custom_questions' => $cq])
 			);
 
-			if ( wpzoom_is_error_response( $registerResponse ) ) {
+			if ( zoompress_is_error_response( $registerResponse ) ) {
 				if ( current_user_can( 'manage_options' ) && $registerResponse['code'] === 124 ) {
 					throw new Exception( sprintf(
 						'Invalid Zoom API keys. Please %s and add valid API keys.',
-						wpzoom_get_settings_page_anchor()
-					), WPZOOM_Shortcode::ALERT_FOR_ADMIN );
+						zoompress_get_settings_page_anchor()
+					), ZOOMPRESS_Shortcode::ALERT_FOR_ADMIN );
 				} else {
 					throw new Exception( 'There is something wrong, please contact support.' );
 				}
@@ -167,7 +167,7 @@ class WPZOOM_ZoomRegisterShortcode extends WPZOOM_Shortcode {
 
 			if ( ! isset( $registerResponse['registrant_id'] ) ) {
 				if ( current_user_can( 'manage_options' ) ) {
-					throw new Exception( 'There is no registrant id!', WPZOOM_Shortcode::ALERT_FOR_ADMIN );
+					throw new Exception( 'There is no registrant id!', ZOOMPRESS_Shortcode::ALERT_FOR_ADMIN );
 				} else {
 					throw new Exception( 'There is something wrong, please contact support.' );
 				}

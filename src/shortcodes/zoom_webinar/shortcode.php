@@ -6,7 +6,7 @@
  */
 defined( 'ABSPATH' ) || exit;
 
-class WPZOOM_ZoomWebinarShortcode extends WPZOOM_Shortcode {
+class ZOOMPRESS_ZoomWebinarShortcode extends ZOOMPRESS_Shortcode {
 
 	public function getTag() {
 		return 'zoom_webinar';
@@ -25,28 +25,28 @@ class WPZOOM_ZoomWebinarShortcode extends WPZOOM_Shortcode {
 		$isExternalRegistration = $atts['registration'] === 'external' ? true : false;
 
 		try {
-			$key    = WPZOOM_Settings::getTokenKey();
-			$secret = WPZOOM_Settings::getTokenSecret();
+			$key    = ZOOMPRESS_Settings::getTokenKey();
+			$secret = ZOOMPRESS_Settings::getTokenSecret();
 
 			if ( empty( $key ) || empty( $secret ) ) {
 				throw new Exception( sprintf(
 					'You did not setup Zoom API keys yet. Please %s and setup API keys first.',
-					wpzoom_get_settings_page_anchor()
-				), WPZOOM_Shortcode::ALERT_FOR_ADMIN );
+					zoompress_get_settings_page_anchor()
+				), ZOOMPRESS_Shortcode::ALERT_FOR_ADMIN );
 			}
 
 			$zoomUsers = new Zoom\Endpoint\Users( $key, $secret );
 			$userResponse = $zoomUsers->list();
 
-			if ( wpzoom_is_error_response( $userResponse ) ) {
+			if ( zoompress_is_error_response( $userResponse ) ) {
 				throw new Exception( sprintf(
 					'Invalid Zoom API keys. Please %s and add valid API keys.',
-					wpzoom_get_settings_page_anchor()
-				), WPZOOM_Shortcode::ALERT_FOR_ADMIN );
+					zoompress_get_settings_page_anchor()
+				), ZOOMPRESS_Shortcode::ALERT_FOR_ADMIN );
 			}
 
 			if ( empty( $userResponse['users'] ) ) {
-				throw new Exception( 'No data found.', WPZOOM_Shortcode::ALERT_FOR_ALL );
+				throw new Exception( 'No data found.', ZOOMPRESS_Shortcode::ALERT_FOR_ALL );
 			}
 
 			$userFirst = current( $userResponse['users'] );
@@ -55,7 +55,7 @@ class WPZOOM_ZoomWebinarShortcode extends WPZOOM_Shortcode {
 			$webinarResponse = $zoomWebinar->list( $userFirst['id'], [] );
 
 			if ( empty( $webinarResponse['webinars'] ) ) {
-				throw new Exception( 'No webinars found.', WPZOOM_Shortcode::ALERT_FOR_ALL );
+				throw new Exception( 'No webinars found.', ZOOMPRESS_Shortcode::ALERT_FOR_ALL );
 			}
 
 			// prepare webinars and do processing
@@ -105,7 +105,7 @@ class WPZOOM_ZoomWebinarShortcode extends WPZOOM_Shortcode {
 				// get the start time
 				$startTime = $webinarData['start_time'];
 				$dateTime = new DateTime( $startTime );
-				$dateTime->setTimezone( wpzoom_timezone() ); // Had to set forcefully
+				$dateTime->setTimezone( zoompress_timezone() ); // Had to set forcefully
 				$webinar->start = $dateTime->format( 'Y-m-d' ) . ' at ' . $dateTime->format( 'g:iA' );
 				$webinar->duration = $webinarData['duration'];
 				$webinar->id = $webinarData['id'];
@@ -119,7 +119,7 @@ class WPZOOM_ZoomWebinarShortcode extends WPZOOM_Shortcode {
 			}
 
 			/* test templating */
-			$template = new WPZOOM_Template();
+			$template = new ZOOMPRESS_Template();
 			$template->templatePath = 'src/shortcodes/zoom_webinar/templates/';
 			$template->templateName = 'table';
 			$template->data = array(
@@ -129,10 +129,10 @@ class WPZOOM_ZoomWebinarShortcode extends WPZOOM_Shortcode {
 
 			return $template->get();
 		} catch ( \Exception $e ) {
-			if ( wpzoom_is_admin_alert( $e ) ) {
-				return wpzoom_get_alert( $e->getMessage() );
+			if ( zoompress_is_admin_alert( $e ) ) {
+				return zoompress_get_alert( $e->getMessage() );
 			} else {
-				return wpzoom_get_alert( $e->getMessage() );
+				return zoompress_get_alert( $e->getMessage() );
 			}
 		}
 	}
@@ -153,9 +153,9 @@ class WPZOOM_ZoomWebinarShortcode extends WPZOOM_Shortcode {
 		$dateStart = substr( $start, 0, 10 );
 
 		$datetime1 = new DateTime( $dateStart );
-		$datetime1->setTimezone( wpzoom_timezone() );
+		$datetime1->setTimezone( zoompress_timezone() );
 		$datetime2 = new DateTime( date( 'Y-m-d' ) );
-		$datetime2->setTimezone( wpzoom_timezone() );
+		$datetime2->setTimezone( zoompress_timezone() );
 		$interval = $datetime2->diff( $datetime1 );
 
 		$sign = $interval->format( '%R' );

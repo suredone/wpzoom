@@ -1,15 +1,15 @@
 ;(function($) {
 
 	$(function() {
-		$zoomForm = $('#wpzoom-registration-form'),
-		$zoomParent = $zoomForm.parent('.wpzoom-registration'),
+		$zoomForm = $('#zoompress-registration-form'),
+		$zoomParent = $zoomForm.parent('.zoompress-registration'),
 		$spinner = $zoomForm.find('.spinner'),
 		$submitButton = $zoomForm.find('input[type="submit"]');
 
 		$submitButton.attr('disabled', false);
 
-		$zoomForm.on('keyup', '.wpzoom-input-field', function() {
-			$(this).removeClass('wpzoom-input-field--error');
+		$zoomForm.on('keyup', '.zoompress-input-field', function() {
+			$(this).removeClass('zoompress-input-field--error');
 		});
 
 		function showMessage(msg, type) {
@@ -23,12 +23,12 @@
 					mks.push('[name="'+mk+'"]');
 				}
 				msg = '<ul>' + ma.join('\n') + '</ul>';
-				$zoomForm.find($(mks.join(','))).addClass('wpzoom-input-field--error');
+				$zoomForm.find($(mks.join(','))).addClass('zoompress-input-field--error');
 			}
 
-			msg = '<div class="wpzoom-alert wpzoom-alert--'+type+'">'+msg+'</div>';
+			msg = '<div class="zoompress-alert zoompress-alert--'+type+'">'+msg+'</div>';
 
-			$zoomParent.find('.wpzoom-alert').remove();
+			$zoomParent.find('.zoompress-alert').remove();
 			$zoomForm.before($(msg));
 		}
 
@@ -42,8 +42,8 @@
                 contentType: false,
 				type: 'POST',
 				beforeSend: function() {
-					$zoomForm.addClass('wpzoom-registration-form--processing');
-					$zoomForm.find('.wpzoom-input-field--error').removeClass('.wpzoom-input-field--error');
+					$zoomForm.addClass('zoompress-registration-form--processing');
+					$zoomForm.find('.zoompress-input-field--error').removeClass('.zoompress-input-field--error');
 					$submitButton.attr('disabled', true).addClass('disabled');
 				},
             }).done(function(response) {
@@ -52,7 +52,7 @@
 				} else {
 					showMessage(response.data, 'error');
 				}
-				$zoomForm.removeClass('wpzoom-registration-form--processing');
+				$zoomForm.removeClass('zoompress-registration-form--processing');
 				$submitButton.attr('disabled', false).removeClass('disabled');
             });
 		});

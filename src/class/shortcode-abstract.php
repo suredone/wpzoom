@@ -7,7 +7,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-abstract class WPZOOM_Shortcode {
+abstract class ZOOMPRESS_Shortcode {
 
 	/**
 	 * Admin only alert

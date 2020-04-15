@@ -1,6 +1,6 @@
 <?php
 
-class WPZOOM_Template {
+class ZOOMPRESS_Template {
 
   public $data = [];
   public $templatePath;
@@ -18,7 +18,7 @@ class WPZOOM_Template {
       extract( $this->data );
     }
     ob_start();
-    require( WP_ZOOM_PLUGIN_PATH . $this->templatePath . $this->templateName . '.php' );
+    require( ZOOMPRESS_PLUGIN_PATH . $this->templatePath . $this->templateName . '.php' );
     $content = ob_get_contents();
     ob_end_clean();
     return $content;

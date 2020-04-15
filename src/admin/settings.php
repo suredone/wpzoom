@@ -5,7 +5,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-class WPZOOM_Settings {
+class ZOOMPRESS_Settings {
 
 	const PAGE_SLUG = 'wp-zoom-settings';
 
@@ -41,7 +41,7 @@ class WPZOOM_Settings {
     }
 
     public function pageSettings() {
-        $template = new WPZOOM_Template();
+        $template = new ZOOMPRESS_Template();
         $template->templatePath = 'templates/';
         $template->templateName = 'settings-form';
         $template->data = array();
@@ -67,7 +67,7 @@ class WPZOOM_Settings {
 			$zoomUsers = new Zoom\Endpoint\Users( $key, $secret );
             $userResponse = $zoomUsers->list();
 
-			if ( wpzoom_is_error_response( $userResponse ) ) {
+			if ( zoompress_is_error_response( $userResponse ) ) {
 				throw new Exception( 'Invalid API keys, please try again with valid keys' );
 			}
 
@@ -102,7 +102,7 @@ class WPZOOM_Settings {
     }
 
     public static function getRegistrationPageLink( $context = 'display' ) {
-        $link = get_the_permalink( WPZOOM_Settings::getRegistrationPage() );
+        $link = get_the_permalink( ZOOMPRESS_Settings::getRegistrationPage() );
 
         if ( $context === 'edit' ) {
             return $link;

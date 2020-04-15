@@ -5,66 +5,66 @@
   background: #F5F5F5;
 }
 
-.wpzoom-alert {
+.zoompress-alert {
 	font-size: 16px;
     padding: .5rem 1.25rem;
     margin-bottom: 1rem;
     border: 1px solid transparent;
 }
 
-.wpzoom-alert > ul {
+.zoompress-alert > ul {
 	margin: 0;
 }
 
-.wpzoom-alert--info {
+.zoompress-alert--info {
 	color: #0c5460;
     background-color: #d1ecf1;
     border-color: #bee5eb
 }
 
-.wpzoom-alert--success {
+.zoompress-alert--success {
     color: #155724;
     background-color: #d4edda;
     border-color: #c3e6cb;
 }
 
-.wpzoom-alert--error {
+.zoompress-alert--error {
     color: #721c24;
     background-color: #f8d7da;
     border-color: #f5c6cb;
 }
 
-.wpzoom-form-field:not(:last-child) {
+.zoompress-form-field:not(:last-child) {
 	margin-bottom: 20px;
 }
 
-.wpzoom-form-label {
+.zoompress-form-label {
 	display: block;
 	margin-bottom: 10px;
 }
 
-.wpzoom-input-field {
+.zoompress-input-field {
 	width: 100%;
 }
 
-.wpzoom-field-field--radio label:not(.wpzoom-input-field),
-.wpzoom-field-field--multiple label:not(.wpzoom-input-field) {
+.zoompress-field-field--radio label:not(.zoompress-input-field),
+.zoompress-field-field--multiple label:not(.zoompress-input-field) {
 	margin-right: 10px;
 }
 
-.wpzoom-input-field--error {
+.zoompress-input-field--error {
 	border: 1px solid rgb(239, 94, 109) !important;
 }
 
-.wpzoom-register-submit {
+.zoompress-register-submit {
 	margin-top: 30px
 }
 
-.wpzoom-registration-form--processing {
+.zoompress-registration-form--processing {
 	position: relative;
 }
 
-.wpzoom-form-spinner {
+.zoompress-form-spinner {
 	display: none;
 	position: absolute;
 	left: 0;
@@ -74,13 +74,13 @@
 	background-color: rgba(255, 255, 255, .7);
 }
 
-.wpzoom-form-spinner > img {
+.zoompress-form-spinner > img {
 	position: absolute;
 	left: 50%;
 	top: 50%;
 	transform: translate(-50%,-50%);
 }
 
-.wpzoom-registration-form--processing .wpzoom-form-spinner {
+.zoompress-registration-form--processing .zoompress-form-spinner {
 	display: block;
 }

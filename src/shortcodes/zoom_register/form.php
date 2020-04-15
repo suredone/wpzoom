@@ -4,7 +4,7 @@
  */
 defined( 'ABSPATH' ) || exit;
 
-class WPZOOM_Registration_Form {
+class ZOOMPRESS_Registration_Form {
 
 	protected $questions = [];
 
@@ -167,12 +167,12 @@ class WPZOOM_Registration_Form {
 			$req = 'required="required"';
 		}
 		?>
-		<div class="wpzoom-form-field wpzoom-field-field--short">
-			<label class="wpzoom-form-label" for="wpzoom-field-<?php echo $id; ?>"><?php echo $this->getFieldLabel($fieldData, $isRequired); ?></label>
+		<div class="zoompress-form-field zoompress-field-field--short">
+			<label class="zoompress-form-label" for="zoompress-field-<?php echo $id; ?>"><?php echo $this->getFieldLabel($fieldData, $isRequired); ?></label>
 			<?php if ( $type === 'textarea' ) : ?>
-				<textarea <?php echo $req; ?> name="<?php echo esc_attr( $fieldName ); ?>" id="wpzoom-field-<?php echo $id; ?>" cols="30" rows="3"></textarea>
+				<textarea <?php echo $req; ?> name="<?php echo esc_attr( $fieldName ); ?>" id="zoompress-field-<?php echo $id; ?>" cols="30" rows="3"></textarea>
 			<?php else : ?>
-				<input <?php echo $req; ?> class="wpzoom-input-field wpzoom-field-first-name" name="<?php echo esc_attr( $fieldName ); ?>" id="wpzoom-field-<?php echo $id; ?>" type="<?php echo $type; ?>" />
+				<input <?php echo $req; ?> class="zoompress-input-field zoompress-field-first-name" name="<?php echo esc_attr( $fieldName ); ?>" id="zoompress-field-<?php echo $id; ?>" type="<?php echo $type; ?>" />
 			<?php endif; ?>
 		</div>
 		<?php
@@ -188,11 +188,11 @@ class WPZOOM_Registration_Form {
 			$req = 'required="required"';
 		}
 		?>
-		<div class="wpzoom-form-field wpzoom-field-field--radio">
-			<label class="wpzoom-form-label"><?php echo $this->getFieldLabel($fieldData, $isRequired); ?></label>
+		<div class="zoompress-form-field zoompress-field-field--radio">
+			<label class="zoompress-form-label"><?php echo $this->getFieldLabel($fieldData, $isRequired); ?></label>
 			<?php foreach ($fieldData['answers'] as $answer ) : $id = uniqid(sanitize_key( $answer )); ?>
-				<label for="wpzoom-field-<?php echo $id; ?>">
-					<input <?php echo $req; ?> id="wpzoom-field-<?php echo $id; ?>" type="radio" name="<?php echo esc_attr( $fieldName ); ?>" value="<?php echo esc_attr( $answer ); ?>" /> <?php echo $answer; ?>
+				<label for="zoompress-field-<?php echo $id; ?>">
+					<input <?php echo $req; ?> id="zoompress-field-<?php echo $id; ?>" type="radio" name="<?php echo esc_attr( $fieldName ); ?>" value="<?php echo esc_attr( $answer ); ?>" /> <?php echo $answer; ?>
 				</label>
 			<?php endforeach; ?>
 		</div>
@@ -210,9 +210,9 @@ class WPZOOM_Registration_Form {
 			$req = 'required="required"';
 		}
 		?>
-		<div class="wpzoom-form-field wpzoom-field-field--dropdown">
-			<label class="wpzoom-form-label" for="wpzoom-field-<?php echo $id; ?>"><?php echo $this->getFieldLabel($fieldData, $isRequired); ?></label>
-			<select <?php echo $req; ?> id="wpzoom-field-<?php echo $id; ?>" name="<?php echo esc_attr( $fieldName ); ?>">
+		<div class="zoompress-form-field zoompress-field-field--dropdown">
+			<label class="zoompress-form-label" for="zoompress-field-<?php echo $id; ?>"><?php echo $this->getFieldLabel($fieldData, $isRequired); ?></label>
+			<select <?php echo $req; ?> id="zoompress-field-<?php echo $id; ?>" name="<?php echo esc_attr( $fieldName ); ?>">
 			<?php foreach ($fieldData['answers'] as $answer ) : ?>
 				<option value="<?php echo esc_attr( $answer ); ?>"><?php echo $answer; ?></option>
 			<?php endforeach; ?>
@@ -230,11 +230,11 @@ class WPZOOM_Registration_Form {
 			$req = 'required="required"';
 		}
 		?>
-		<div class="wpzoom-form-field wpzoom-field-field--multiple">
-			<label class="wpzoom-form-label"><?php echo $this->getFieldLabel($fieldData, $isRequired); ?></label>
+		<div class="zoompress-form-field zoompress-field-field--multiple">
+			<label class="zoompress-form-label"><?php echo $this->getFieldLabel($fieldData, $isRequired); ?></label>
 			<?php foreach ($fieldData['answers'] as $answer) : $id = uniqid(sanitize_key( $answer )); ?>
-			<label for="wpzoom-field-<?php echo $id; ?>">
-				<input <?php echo $req; ?> id="wpzoom-field-<?php echo $id; ?>" type="checkbox" name="<?php echo esc_attr( $fieldName ); ?>" value="<?php echo esc_attr( $answer ); ?>" /> <?php echo $answer; ?>
+			<label for="zoompress-field-<?php echo $id; ?>">
+				<input <?php echo $req; ?> id="zoompress-field-<?php echo $id; ?>" type="checkbox" name="<?php echo esc_attr( $fieldName ); ?>" value="<?php echo esc_attr( $answer ); ?>" /> <?php echo $answer; ?>
 			</label>
 			<?php endforeach; ?>
 		</div>
@@ -290,6 +290,6 @@ class WPZOOM_Registration_Form {
 			'cq' => $this->customQuestions,
 		];
 
-		echo '<input type="hidden" name="wpzoom_fields" value="'.esc_attr(wp_json_encode($f)).'">';
+		echo '<input type="hidden" name="zoompress_fields" value="'.esc_attr(wp_json_encode($f)).'">';
 	}
 }
