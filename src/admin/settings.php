@@ -31,8 +31,8 @@ class ZOOMPRESS_Settings {
 
     public function adminPage() {
         add_options_page(
-            'WP Zoom Settings',
-            'WP Zoom Settings',
+            'ZoomPress Settings',
+            'ZoomPress Settings',
             'manage_options',
             'wp-zoom-settings',
             array( $this, 'pageSettings' ),

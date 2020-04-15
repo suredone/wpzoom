@@ -15,8 +15,8 @@ $view_link =  add_query_arg( array( 'page_id' => '#' ), home_url( '/' ) );
 ?>
 
 <div class="wrap">
-    <h1>WP Zoom Settings</h1>
-    <p>WP Zoom uses the recommended JWT keys (not oAuth). Enter your JWT keys below.</p>
+    <h1>ZoomPress Settings</h1>
+    <p>ZoomPress uses the recommended JWT keys (not oAuth). Enter your JWT keys below.</p>
 
     <form id="wp-zoom-settings" method="post" action="<?php echo esc_url( admin_url( 'admin-ajax.php' ) ) ;?>">
         <?php wp_nonce_field( ZOOMPRESS_Settings::NONCE_ACTION_KEY ); ?>
