@@ -13,14 +13,19 @@ class ZOOMPRESS_ZoomCalendarShortcode extends ZOOMPRESS_Shortcode {
 	}
 
 	public function doShortcode( $atts, $content = null ) {
+
 		$atts = shortcode_atts( array(
 			'include' => '',
 			'exclude' => '',
 			'hide' => '',
-			'days' => ''
+			'days' => '',
+			'registration' => 'internal',
 		), $atts, $this->getTag() );
 
+		$isExternalRegistration = $atts['registration'] === 'external' ? true : false;
+
 		try {
+
 			$key    = ZOOMPRESS_Settings::getTokenKey();
 			$secret = ZOOMPRESS_Settings::getTokenSecret();
 
@@ -56,29 +61,70 @@ class ZOOMPRESS_ZoomCalendarShortcode extends ZOOMPRESS_Shortcode {
 
 			wp_enqueue_script( 'zoom-calendar-js' );
 
+			$webinarDates = [];
+			foreach( $webinarResponse['webinars'] as $webinarListing ) {
+
+				$webinarDetail = $zoomWebinar->getDetails( $webinarListing['id'] );
+
+				if ( isset($webinarDetail['occurrences']) && is_array($webinarDetail['occurrences']) ) {
+
+					// add each occurence as a webinar date
+					foreach( $webinarDetail['occurrences'] as $occurence ) {
+
+						$webinarDate = new stdClass;
+						$webinarDate->title = $webinarListing['topic'];
+						$webinarDate->start = $this->getFormattedTime( $occurence['start_time'] );
+						$webinarDate->duration = $occurence['duration'];
+
+						if( $isExternalRegistration ) {
+							$webinarDate->register = $webinarListing['join_url'];
+						} else {
+							$args = [ 'wid' => $webinarListing['id'] ];
+							$args['oid'] = $occurence['occurrence_id'];
+							$webinarDate->register = add_query_arg( $args, ZOOMPRESS_Settings::getRegistrationPageLink() );
+						}
+
+						$webinarDates[] = $webinarDate;
+					}
+				} else {
+					// add 1 webinar date for the webinar itself (singular)
+					$webinarDate = new stdClass;
+					$webinarDate->title = $webinarListing['topic'];
+					$webinarDate->start = $this->getFormattedTime( $webinarListing['start_time'] );
+					$webinarDate->duration = $webinarListing['duration'];
+
+					if( $isExternalRegistration ) {
+						$webinarDate->register = $webinarListing['join_url'];
+					} else {
+						$args = [ 'wid' => $webinarListing['id'] ];
+						$webinarDate->register = add_query_arg( $args, ZOOMPRESS_Settings::getRegistrationPageLink() );
+					}
+
+					$webinarDates[] = $webinarDate;
+				}
+			}
+
 			wp_localize_script(
 				'zoom-calendar-js',
 				'wpZoomWebinars',
-				$webinarResponse['webinars']
+				$webinarDates
 			);
 
-			/* test templating */
+			/* load calendar template */
 			$template = new ZOOMPRESS_Template();
 			$template->templatePath = 'src/shortcodes/zoom_calendar/templates/';
 			$template->templateName = 'calendar';
-			$template->data = array(
-				'webinarResponse' => $webinarResponse,
-				'webinars' => $webinarResponse['webinars']
-			);
-
 			return $template->get();
+
 		} catch ( \Exception $e ) {
-			if ( zoompress_is_admin_alert( $e ) ) {
-				return zoompress_get_alert( $e->getMessage() );
-			} else {
-				return zoompress_get_alert( $e->getMessage() );
-			}
+			return zoompress_get_alert( $e->getMessage() );
 		}
+	}
+
+	protected function getFormattedTime( $time ) {
+		$dateTime = new DateTime( $time );
+		$dateTime->setTimezone( zoompress_timezone() ); // Had to set forcefully
+		return $dateTime->format( 'Y-m-d\TG:i:s' );
 	}
 
 }

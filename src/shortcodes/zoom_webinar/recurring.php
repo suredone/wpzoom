@@ -49,4 +49,5 @@ class ZOOMPRESS_Recurring_Webinar {
 		$dateTime->setTimezone( zoompress_timezone() ); // Had to set forcefully
 		return $dateTime->format( 'Y-m-d' ) . ' at ' . $dateTime->format( 'g:iA' );
 	}
+	
 }

@@ -12,7 +12,6 @@ class ZOOMPRESS_ZoomWebinarShortcode extends ZOOMPRESS_Shortcode {
 		return 'zoom_webinar';
 	}
 
-
 	public function doShortcode( $atts, $content = null ) {
 		$atts = shortcode_atts( array(
 			'include' => '',

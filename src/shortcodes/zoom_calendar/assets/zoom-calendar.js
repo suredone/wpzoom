@@ -4,8 +4,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
   wpZoomWebinars.forEach( function( item, index ) {
     var event = {
-      title: item.topic,
-      start: item.start_time
+      title: item.title,
+      start: item.start,
+      register: item.register
     }
     events.push( event )
   })
@@ -20,7 +21,6 @@ document.addEventListener('DOMContentLoaded', function() {
       center: 'title',
       right: 'dayGridMonth,dayGridDay'
     },
-    defaultDate: '2020-03-07',
     navLinks: true, // can click day/week names to navigate views
     businessHours: true, // display business hours
     editable: true,
@@ -28,15 +28,8 @@ document.addEventListener('DOMContentLoaded', function() {
     contentHeight: 'auto',
     events: events,
     eventClick: function( info ) {
-
-      console.log(info)
-      console.log( calendar )
-
-      //calendar.gotoDate(info.event.start);
-      calendar.changeView('dayGrid', info.event.start);
-
-
-
+      info.jsEvent.preventDefault();
+      window.open(info.event.extendedProps.register);
     }
   });
 
