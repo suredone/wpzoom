@@ -60,7 +60,6 @@ class ZOOMPRESS_ZoomWebinarShortcode extends ZOOMPRESS_Shortcode {
 			// prepare webinars and do processing
 			$webinars = array();
 			$webinarsSorted = array_reverse( $webinarResponse['webinars'] );
-
 			foreach ( $webinarsSorted as $webinarData ) {
 				$webinar = new stdClass;
 				$title = $webinarData['topic'];
@@ -124,9 +123,9 @@ class ZOOMPRESS_ZoomWebinarShortcode extends ZOOMPRESS_Shortcode {
 			$template->data = array(
 				'zoomWebinar' => $zoomWebinar,
 				'webinars' => $webinars,
-			);
+			); 
 
-			return $template->get();
+			return $template->get(); 
 
 		} catch ( \Exception $e ) {
 			return zoompress_get_alert( $e->getMessage() );

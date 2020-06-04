@@ -35,7 +35,7 @@ class ZOOMPRESS_Recurring_Webinar {
 		foreach ($this->webinars['occurrences'] as $webinar ) :
 			?>
 			<tr>
-				<td><?php echo $this->parentWebinar->title . ' (Recurring)'; ?></td>
+				<td><?php echo $this->parentWebinar->title . ' '; ?></td>
 				<td><?php echo $this->getFormattedTime($webinar['start_time']); ?></td>
 				<td><?php echo $webinar['duration']; ?> Minutes</td>
 				<td><?php zoompress_webinar_register_button($this->parentWebinar, $webinar['occurrence_id']); ?></td>
